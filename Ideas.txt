@@ -1,0 +1,27 @@
+Ideas for series title:
+
+- Orchard behind the screen
+- Orchard Inside Out
+- Orchard Grid
+- Orchard Off The Grid Series
+- Orchard Universe
+	- Blackhole edition
+
+
+"Off The Grid" titles:
+- Layouts
+- Orchard Fundamentals
+    -	Modules and Features
+	-	Content, Content Types, Parts and Fields
+	-   Drivers from the ground up.
+- Dynamic Forms
+- Workflows
+- Projections
+- Taxonomies
+- Lists
+- Audit Trail
+- Widgets
+- Authentication & Authorization
+- Shapes
+- Theming
+- Data Access

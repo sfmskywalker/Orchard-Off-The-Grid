@@ -25,6 +25,8 @@
 		* Field Elements
 		* Snippet Elements
 		* UI Elements
+		* Placeable Content Elements (TODO)
+		* Widget Elements (TODO)
 	* Layout Templates
     * Element Blueprints
 	* Elements as Widgets

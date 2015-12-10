@@ -61,7 +61,6 @@
             * Element Type
     * Creating Custom Elements
     * Element Harvesters
-    * TypedElementHarvester
     * Element Types
     * Element Drivers
     * Rendering Elements

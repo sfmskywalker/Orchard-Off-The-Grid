@@ -10,6 +10,8 @@ This book is divided in three parts.
 
 **Part 2** takes us a step further by looking at the various shapes and templates available to us when working with custom themes. In this part, we will see how to customize various element shapes as well as which shapes to override in what way in order to take advantage of rid frameworks such as Bootstrap.
 
-**Part 3** is specifically written for the Orchard module developer out there who is looking for a better understanding of how the module works on a technical level and learn about its extensibility in order to create custom elements and element harvesters.
+**Part 3** is specifically written for the Orchard module developer out there who is looking for a better understanding of how the module works on a technical level and learn about its extensibility in order to create custom elements and element harvesters. Me being a developer at heart, this is the biggest part of the book.
 
- 
+**Part 4** takes use through the process of building a real-world theme with the focus on how to apply the Layouts module.
+
+I hope you will enjoy reading this as much as I enjoyed writing it, and that the things you'll learn may serve you well when working with Orchard.

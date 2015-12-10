@@ -105,15 +105,15 @@ In fact, the Layouts module does exactly that for us! When Layouts is enabled, i
 - Media Widget
 - Content Widget
 
-The Text Widget, like the Text element, aren't that useful, so we'll skip that one.
-The Media Widget let's the user select one or more Media Items to be displayed.
-The Content Widget let's the user select one or more Content Items to be displayed.
+In all fairness, the Text Widget, as is the case with the Text element, isn't all that useful, so we'll skip that one.
+The Media Widget lets the user select one or more Media Items to be displayed.
+The Content Widget lets the user select one or more Content Items to be displayed.
 
 This enables scenarios where you want to display a certain piece of content multiple times on various locations on your website, without the need to duplicate that content, which of course greatly improves the site's maintenance.
 Granted, you could achieve this by simply placing an Html Widget somewhere and associate it with the Default layer of course, but as soon as you want to display the same content twice in two different zones, you'll need to duplicate that content.
 
 ### Summary ###
-Elements are versatile things. In this chapter, we learned about the `ElementWrapperPart` and how to use it to turn elements into widgets.
+Elements are versatile and can be used in many different ways other than being part of a canvas. In this chapter, we learned about the `ElementWrapperPart` and how to use it to turn elements into widgets.
 
 In the next chapter, we'll learn about yet another way to display elements using the *Element token*. 
  

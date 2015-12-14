@@ -75,5 +75,6 @@
     	* IElementDisplay
     	* ...
 * **Part 4**
-    * Complete Walkthrough
+    * Walkthrough: Creating a SlideShowPart
+    * Walkthrough: Creating Websites with Layouts
 * ** Index **

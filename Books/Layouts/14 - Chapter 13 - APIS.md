@@ -256,11 +256,89 @@ public interface IElementDisplay : IDependency {
 The `DisplayElement` method returns a shape of type `"Element"`, while the `DisplayElements` method returns a shape of type `"LayoutRoot"`, whose child shapes are all of type `"Element"`.
 
 ### The Layout Editor ###
-One final API I wanted to mention before we give them a try is the `ILayoutEditorFactory` service, which enables us to instantiate a fully initialized `LayoutEditor` object, which is essentially just a view model that can be rendered using a Razor Partial View. This means that we can use the Html helper `Editor` and `EditorFor` on instances of this class, and the entire layout editor will be rendered.
+The `ILayoutEditorFactory` service enables us to instantiate a fully initialized `LayoutEditor` object, which is used as a view model. We can use the Html helpers `Editor` and `EditorFor` on `LayoutEditor` objects to the entire layout editor.
 
-You would typically use this layout editor factory class from your own controller, and supply the `LayoutEditor` object to your view, from where you render it using `Html.EditorFor`.
+You typically use this layout editor factory class from your own controller, and supply the `LayoutEditor` object to your view, from where you render it using `Html.EditorFor`.
 
-What's important to realize here is that a layout is *independent from the LayoutPart*. The LayoutPart is just a user of the layout editor factory. It does however take care of reading the elements back from the editor and supplying element data. When you use the layout edior, it is up to you to handle persisting and restoring the element data. We'll see how this works in practice shortly.
+An interesting aspect you may realize here is that a layout is *independent from the LayoutPart*. The LayoutPart is a user of the layout editor factory, but the layout editor itself s not dependent on the LayoutPart. The LayoutPart does however take care of reading the elements back from the editor and supplying element data. When you use the layout editor, it is up to you to handle persisting and restoring the element data. We'll see how this works in practice shortly.
+
+### Serialization API ###
+The Layouts module comes with two services that handle serialization and deserialization of elements:
+
+- *IElementSerializer*
+- *ILayoutSerializer*
+
+The `ILayoutSerializer` can serialize an array of elements into a JSON string, and deserialize a JSON string back into an array of elements.
+
+Internally, it relies on `IElementSerializer` which contains the logic to serialize and deserialize individual elements and JSON nodes. 
+
+The following two code listings reveal the definition of the two services:
+
+```
+public interface ILayoutSerializer : IDependency {
+    IEnumerable<Element> Deserialize(string data, DescribeElementsContext describeContext);
+    string Serialize(IEnumerable<Element> elements);
+}
+```
+
+```
+public interface IElementSerializer : IDependency {
+    Element Deserialize(string data, DescribeElementsContext describeContext);
+    string Serialize(Element element);
+    object ToDto(Element element;
+    Element ParseNode(JToken node, Container parent, int index, DescribeElementsContext describeContext);
+}
+```
+
+The following table describes each member of `ILayoutSerializer`:
+
+<table>
+<thead>
+    <tr>
+        <th>Member</th>
+        <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Deserialize</td>
+        <td>Deserializes a JSON string into an hierarchy of elements.</td>
+    </tr>
+    <tr>
+        <td>Serialize</td>
+        <td>Serializes an hierarchy of elements into a JSON string.</td>
+    </tr>
+</tbody>
+</table>
+
+And the following table describes the members of `IElementSerializer`:
+
+<table>
+<thead>
+    <tr>
+        <th>Member</th>
+        <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Deserialize</td>
+        <td>Deserializes a JSON string into a single element. If the element has child elements, they too will be deserialized recursively.</td>
+    </tr>
+    <tr>
+        <td>Serialize</td>
+        <td>Serializes an element into a JSON string. If the element has child elements, they too will be serialized recursively.</td>
+    </tr>
+    <tr>
+        <td>ToDto</td>
+        <td>This is used by the Serialize method to turn a given element into an anonymous object, which is then serialized into a JSON string. The reason this method is exposed on the interface is because ILayoutSerializer needs to use the same code. It is unlikely that you'll ever need to use this member yourself.</td>
+    </tr>
+    <tr>
+        <td>ParseNode</td>
+        <td>This is the counterpart of ToDto and used by the Deserialize method to parse a given JSON node into an actual element instance. The reason this method is exposed on the interface is because ILayoutSerializer needs to use the same code. It is unlikely that you'll ever need to use this member yourself.</td>
+    </tr>
+</tbody>
+</table>
 
 ### Demo: Working with the APIs ###
 In this demo, I'll demonstrate how to work with the various APIs covered in this chapter. We'll see how to manually construct a tree of elements, initialize them, serialize and deserialize them and finally render them. We'll then see how to work with the layout editor.
@@ -317,7 +395,7 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
 }
 ```
 
-The above code listing demonstrates how to leverage the `IElementManager` to instantiate an element of a given type.
+The above code listing demonstrates how to work with the `IElementManager` to instantiate an element of a given type.
 
 Instead of setting up the instantiated HTML element as I did above, I could have provided an anonymous function instead, which looks like this:
 
@@ -491,6 +569,167 @@ Now the front-end should look like this:
 
 ![](./figures/fig-97-grid-html-with-style.png)
 
-Next, let's see how we can serialize and deserialize elements.
+Now let's see how we can serialize and deserialize elements.
 
 ### Element Serialization ###
+The following code listing demonstrates the usage of `ILayoutSerializer` to serialize and deserialize an hierarchy of elements. To make it a little bit more interesting, we'll provide the resulting JSON string to a textarea and allow the user to make changes to it and submit it back. We'll then deserialize the submitted JSON and render the updated set of elements.
+
+The following code snippets shows element serialization in action:
+
+```
+// Serialize the root element.
+var json = _elementSerializer.Serialize(rootElement);
+```
+
+Next, set add the JSON string to the ViewBag of our controller:
+
+```
+// Assign the JSON string to a property in the dynamic ViewBag.
+ViewBag.LayoutData = json;
+```
+
+Then update the view as follows:
+
+```
+@{
+    Style.Include("~/Modules/Orchard.Layouts/Styles/default-grid.css");
+}
+<h2>@T("Layout Display")</h2>
+@Display(ViewBag.GridShape)
+
+<h2>@T("Layout Data")</h2>
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.TextArea("LayoutData", (string) ViewBag.LayoutData, new {rows = 30, cols = 150})
+    <button type="submit">@T("Update")</button>
+}
+```
+
+Now let's update our action method so that it will handle the form submission by deserializing the posted JSON string and rendering the elements.
+
+The completed controller looks like this:
+
+```
+using System;
+using System.Web.Mvc;
+using Orchard.Layouts.Elements;
+using Orchard.Layouts.Framework.Display;
+using Orchard.Layouts.Framework.Elements;
+using Orchard.Layouts.Services;
+using Orchard.Themes;
+
+namespace OffTheGrid.Demos.Layouts.Controllers {
+    [Themed]
+    public class ElementsApiController : Controller {
+        private readonly IElementManager _elementManager;
+        private readonly IElementDisplay _elementDisplay;
+        private readonly IElementSerializer _elementSerializer;
+
+        public ElementsApiController(IElementManager elementManager, IElementDisplay elementDisplay, IElementSerializer elementSerializer) {
+            _elementManager = elementManager;
+            _elementDisplay = elementDisplay;
+            _elementSerializer = elementSerializer;
+        }
+
+        public ActionResult Index(string layoutData = null) {
+
+            Element rootElement;
+
+            if (layoutData == null) {
+                // Create a default hierarchy of elements.
+                rootElement = New<Grid>(grid => {
+                    // Row.
+                    grid.Elements.Add(New<Row>(row => {
+                        // Column 1.
+                        row.Elements.Add(New<Column>(column => {
+                            column.Width = 8;
+                            column.Elements.Add(New<Html>(html => html.Content = "This is the <strong>first</strong> column."));
+                        }));
+
+                        // Column 2.
+                        row.Elements.Add(New<Column>(column => {
+                            column.Width = 4;
+                            column.Elements.Add(New<Html>(html => html.Content = "This is the <strong>second</strong> column."));
+                        }));
+                    }));
+                });
+
+                // Serialize the root element.
+                var json = _elementSerializer.Serialize(rootElement);
+
+                // Assign the JSON string to a property in the dynamic ViewBag.
+                ViewBag.LayoutData = json;
+            }
+            else {
+                rootElement = _elementSerializer.Deserialize(layoutData, DescribeElementsContext.Empty);
+            }
+
+            // Render the Html element.
+            var rootElementShape = _elementDisplay.DisplayElement(rootElement, content: null);
+
+            // Assign the HtmlShape to a property on the dynamic ViewBag.
+            ViewBag.RootElementShape = rootElementShape;
+            
+            return View();
+        }
+
+        private T New<T>(Action<T> initialize) where T:Element {
+            return _elementManager.ActivateElement<T>(initialize);
+        }
+    }
+}
+```
+
+The key updates are the addition of the optional `layoutData` parameter, which we, if not null, deserialize using the following code:
+
+```
+rootElement = _elementSerializer.Deserialize(layoutData, DescribeElementsContext.Empty);
+```
+
+So basically, we either construct a layout of elements manually, or deserialize a JSON string, and render the resulting element instance. We can now view the default JSON, manipulate it, and submit it back to the controller.
+
+![](./figures/fig-98-default-json-result.png)
+
+Pasting in the following JSON:
+
+```
+{
+    "typeName": "Orchard.Layouts.Elements.Grid",
+    "elements": [
+    {
+        "typeName": "Orchard.Layouts.Elements.Row",
+        "elements": [
+        {
+            "typeName": "Orchard.Layouts.Elements.Column", 
+            "data": "Width=4", 
+            "elements": [
+            {
+                "typeName": "Orchard.Layouts.Elements.Html", 
+                "data": "Content=This+is+the+%3cstrong%3efirst%3c%2fstrong%3e+column.", 
+            }], 
+        },
+        {
+            "typeName": "Orchard.Layouts.Elements.Column", 
+            "data": "Width=4", 
+            "elements": [
+            {
+                "typeName": "Orchard.Layouts.Elements.Html", 
+                "data": "Content=This+is+the+%3cstrong%3esecond%3c%2fstrong%3e+column.", 
+                "htmlStyle": "color:red;", 
+            }], 
+        },
+        {
+            "typeName": "Orchard.Layouts.Elements.Column", 
+            "data": "Width=4", 
+            "elements": [
+            {
+                "typeName": "Orchard.Layouts.Elements.Html", 
+                "data": "Content=This+is+the+%3cstrong%3ethird%3c%2fstrong%3e+column."
+            }]
+        }]
+    }]
+}
+```
+
+Will render the following output:
+
+![]()

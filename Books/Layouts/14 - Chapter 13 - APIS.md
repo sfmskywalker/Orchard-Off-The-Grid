@@ -732,4 +732,22 @@ Pasting in the following JSON:
 
 Will render the following output:
 
-![]()
+![](./figures/fig-99-custom-json-result.png)
+
+### Working with the Layout Editor ###
+Although editing layouts of elements with raw JSON isn't ideal, it does demonstrate an interesting fact: you can potentially implement any sort of editor to enable users to work with elements.
+
+The Layouts module itself provides a fully-function layout editor that we can reuse, instead of using a simple textarea.
+
+The easiest way to get our hands on a layout editor object is to leverage the `ILayoutEditorFactory` that we mentioned earlier.
+
+We'll continue with our current sample controller and replace the textarea with a full-blown element controller. First order of business is to inject the `ILayoutFactory` and create the `LayoutEditor` viewmodel, which we'll render from our view.
+
+The following code snippet shows the updated action method (I left out injecting the layout editor factory for brevity): 
+
+```
+
+```
+
+Notice that I moved the creation of the initial elements to a private method and that I changed the root element to be a Canvas element, which is required for the layout editor.
+  

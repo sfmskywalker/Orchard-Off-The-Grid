@@ -1,101 +1,101 @@
 ## Layouts ##
 ### What are Layouts###
-Layouts are everywhere. You find them in newspapers and magazines, in the office and your living room. Cities, planets and the universe all have layout. When we talk about a layout, we talk about the layout of things. Elements, objects and shapes, that are placed in a particular position.
+Layouts are everywhere. You find them in newspapers and magazines, in the office and your living room. Cities, planets and the universe all have layout. It is the layout of things. You could say that elements, objects and shapes that are placed in a particular position relative to each other, are said to be part of a layout.
 
-Simply put, **a layout is the arrangement of elements in a space**.
+In other words, **a layout is the arrangement of elements in a given plane**.
 
-In the world of websites, **a layout is the arrangement of visual elements on a two-dimensional surface**. This includes things such the site navigation, side bar, main content and footer are placed, as well as the layout of individual content blocks.
+In the world of websites, **a layout is the arrangement of visual elements on a two-dimensional surface**. Visual elements include things such the site navigation, side bar, main content and footer and blocks of contents.
 
 #### Orchard and Layouts ####
-In the world of the `Orchard.Layouts` module, a layout is **a collection of elements placed on a canvas**. This canvas and its elements are ultimately turned into an hierarchy of shapes that get rendered.
+In the world of the **Orchard.Layouts** module, a layout is **an hierarchical collection of elements placed on a canvas**.
 
-This chapter will provide a good understanding of what `Orchard.Layouts` brings to the table and why (and when) we should use it. Firstly, we need to talk about the term "layout" in the context of Orchard and put things into perspective. This will help get us a better understanding of what the Layouts module is and is not.
+This chapter we'll get to see what the Layouts module brings to the table and why (and when) we should use it.
+
+Before we dig in, let's talk about the term "layout" for a bit, as this term is kind of overloaded in the context of Orchard. This will help get us a better understanding of what the Layouts module is, and what it is not.
 
 ##### Layout and Layout.cshtml #####
-If you ever developed an Orchard theme, you'll be very familiar with this Razor file. It basically contains all of the HTML of the site's overall design and layout.
+If you ever developed an Orchard theme, you'll be very familiar with the Razor view called **Layout.cshtml**. It basically contains all of the HTML of the site's overall design and layout. It is the shape template for the **root Layout shape** and renders the main layout of the site, also rendering **zones**.
 
-`Layout.cshtml` is the Razor shape template for the root `Layout` shape and renders the main layout of the site and decides where and when to render specific **zones**.
-
-This type of layout is part of the website's theme and cannot be controlled by content editors. We will call this the **theme layout**. Each zone within this layout can itself contain shapes, such as the *Widget* and *Content* shapes.
-
-Just so we're clear: the `Orchard.Layouts` module has nothing to do with the root `Layout` shape or `Layout.cshtml`.
+This Layout shape is unrelated to the Layouts module.
 
 ##### LayoutPart and Layout Content Item #####
-When you enable the `Layouts` feature of the `Orchard.Layouts` module, a new content part called `LayoutPart` is added to the system and attached to the `Page` content type by default. The `LayoutPart` enables content editors to visually arrange elements on a canvas. Elements are a new type of entity in Orchard and represent the things you can place on a Canvas element.
+When you enable the `Layouts` feature of the `Orchard.Layouts` module, a new content part called `LayoutPart` is added to the system and attached to the `Page` content type by default. The `LayoutPart` enables content editors to visually arrange elements on a canvas. Elements are a new type of entity in Orchard and represent the things you can place on a canvas.
 
-In addition to attaching the `LayoutPart` to the `Page` content type, the `Layouts` feature adds another content type called `Layout` which has the `LayoutPart` attached to it as well. The key difference between a `Page` and a `Layout` content item is that `Layout` content items are intended to serve as **layout templates** that you can apply to other content items with the `LayoutPart` (such as `Page`). We'll get into layout templates in much more detail later on.
-
-*In a nutshell, the `Layout.cshtml` file provides a way for theme developers to design the overall layout of the website, whereas the `Orchard.Layouts` module provides a way for content editors to create a layout for pieces of contents.*      
+In addition to attaching the `LayoutPart` to the `Page`, the `Layouts` feature adds another content type called `Layout` which also has the `LayoutPart` attached. The key difference between a `Page` and a `Layout` content item is that `Layout` content items are intended to serve as **layout templates** that you can apply to other content items with the `LayoutPart` (such as `Page`). We'll get into layout templates in more detail later on.
 
 ### Why use Orchard.Layouts? ###
 So when would you want to use the Layouts module, and why was it created in the first place?
 
 The easiest way to understand why the Layouts module is useful is by looking at a simple example. Consider the following web page:
 
-![](http://i.imgur.com/Mip8CN5.png)
-*Figure 1 - A simple web page with two paragraphs.*
+![Figure 1.1 - A simple web page with two paragraphs.](./figures/fig-1-1-sample-layout-a.png)
+*Figure 1.1 - A simple web page with two paragraphs.*
 
 This web page consists of two paragraphs of text. Now, let's say that as a content editor, we wanted to display the two paragraphs as two adjacent columns instead as follows:
 
-![](http://i.imgur.com/GZmStg6.png)
-*Figure 2 - A simple web page with two columns.*
+![Figure 1.2 - A simple web page with two columns.](./figures/fig-1-2-sample-layout-b.png)
+*Figure 1.2 - A simple web page with two columns.*
 
-How would one go about this?
-Let's explore our options before we had `Orchard.Layouts`.
+Before we see how easy it is to achieve that with the Layouts module, let's explore our options we before the advent of Layouts.
 
 **Option 1 - Direct HTML manipulation**
 
-One option could be editing the HTML source of the `BodyPart` content and apply your HTML skills by adding an HTML table element, a single row and two cells, or maybe even using Bootstrap's Grid CSS classes and apply them on `div` elements. Although that would certainly work, it is far from ideal because it would require the content editor to know about HTML tables and how to work with them. For a simple two-column layout for a body of text this may not be that big of a deal, but it becomes icky real fast when working with more complex layouts.
+One way is to edit the HTML source of the `BodyPart` content and apply your HTML skills by adding an HTML table element, a single row and two cells, or maybe even using Bootstrap's Grid CSS classes and apply them on `div` elements. Although that would certainly work, it is far from ideal because it would require the content editor to know about HTML tables and how to work with them. For a simple two-column layout for a body of text this may not be that big of a deal, but it becomes icky real fast when working with more complex layouts.
 
-*Disadvantages:*
+Disadvantages of this approach:
 
 - Requires the user to understand and apply relatively advanced HTML.
-- Harder to change content as well as the layout.
-- Content is mixed with markup.
+- Content is mixed with markup, so it's harder to change the content without accidentally breaking the HTML. 
 
-![](http://i.imgur.com/mdUntB0.png)
-*Figure 3 - Using HTML tables to create a two-column layout*
+![Figure 1.3 - Using HTML tables to create a two-column layout](./figures/fig-1-3-sample-layout-b-table-content.png)
+*Figure 1.3 - Using HTML tables to create a two-column layout*
 
 **Option 2 - Widgets and Zones**
 
-Another option could be to ask the theme developer to provide two zones, let's say *AsideFirst* and *AsideSecond* to which the content editor can add widgets. Although this approach will most certainly work, one major disadvantage is that now the content (the widgets) becomes unrelated to the content item itself. The user now has to go to the Widgets screen, create a layer just for the page he's interested in, and add two widgets to the two zones. Now imagine you have a 20 pages. That means 20 widget layers, 2 HTML widgets per layer, and 20 Page content items with no contents.
+Another option is to provide two zones, let's say *AsideFirst* and *AsideSecond*. Then we would simply add an Html Widget to both zones. Although this approach works, one disadvantage is that now the textual content becomes unrelated to the content item itself (since we're now using widgets). To manage the content on this page, the user has to go to the Widgets screen, create a layer just for the page they're interested in, and add two widgets. Now imagine you have 20 pages. That means 20 widget layers, 2 HTML widgets per layer, and 20 Page content items with no contents. Talk about maintenance headaches.
 
-*Disadvantages:*
+![Figure 1.4 - Adding two widgets per layer](./figures/fig-1-4-sample-layout-b-widgets.png)
+*Figure 1.4 - Adding two widgets per layer*
+
+You can imagine this too becomes real icky real fast. And here we're talking about supporting just two columns. Imagine you have other types of layouts, for example one row with two columns, another row with 4 columns, and perhaps rows with one column taking up 2/3 of the row and a second column 1/3 of the row. Crazy. Allowing this level of freedom to the content editor user would easily end up in a maintenance nightmare for both the developer as well as the user.
+
+> I have seen a fair amount of Orchard implementations taking this approach, causing a real maintenance nightmare for the content editors. Creating content, widgets and layers is one thing. Finding the appropriate widgets to edit is quite another. Enabling the Widget Wrapper feature is a must in this sort of scenarios, since it renders an *Edit* link on each widget on the front-end, making it easier to edit the site.
+> Another solution to this problem is to take advantage of a free gallery module called [IDeliverable.Widgets](http://www.ideliverable.com/products/ideliverable.widgets "IDeliverable.Widgets"), which provides a *WidgetsContainerPart*. When you attach this part to your content type, you can associate widgets with your content items directly, instead of having to create layers.
+
+Even if you are fine with working with widgets and zones like this, you're still quite limited in terms of creating other content layouts. For example, adding another row with 3 columns and then another with two columns again would be far from straightforward.
+
+Disadvantages if this approach:
 
 - The widgets are unrelated to the content item, making the site much more difficult to maintain.
 - Requires one layer per content item, making the site much more difficult to maintain.
-- Difficult to introduce other, more complex layouts.
-
-![](http://i.imgur.com/8C2GUza.png)
-*Figure 4 - Adding two widgets per layer*
-
-You can probably imagine this too becomes real icky real fast. And here we're talking about supporting just two columns. Imagine you have other types of layouts, for example one row with two columns, another row with 4 columns, and perhaps rows with one column taking up 2/3 of the row and a second column 1/3 of the row. Crazy. Allowing this level of freedom to the content editor user would easily end up in a maintenance nightmare for both the developer as well as the user.
+- Difficult to introduce other, more complex layouts of contents.
 
 **Option 3 - Content Fields and Placement.info**
  
 Yet another solution is to create various content types, where a content type would have multiple content fields.
 For example, we could create a new content type called `TwoColumnPage` with two `TextField` fields. The theme would use `Placement.info` to place one field into the `AsideFirst` zone and the other field into the `AsideSecond` zone.
 
-![](http://i.imgur.com/GHKpuIG.png)
-*Figure 5 - Creating a special content type for two columns.*
+![Figure 1.5 - Creating a special content type for two columns.](./figures/fig-1-5-sample-layout-b-fields.png)
+*Figure 1.5 - Creating a special content type for two columns.*
 
-Although this option is definitely better than the previous option using widgets, this too has definite downsides.
-We are basically abusing the type system by embedding layout information as part of the content type, adding multiple content types while semantically speaking we only need the *Page* content type.
-To summarize, these are the downsides of the content fields approach: 
+Although this option is arguably better than the previous option using widgets, there is still the limitation of freedom when you want to introduce additional layouts. Not to mention the fact that we're now basing the content type name on what it looks like, rather than its semantic meaning. For example, whether a page has two columns or ten columns, it is still a page.
 
-*Disadvantages:*
+Disadvantages of this approach:
 
 - Content type pollution - the number of content types grows fast, making it more complex for the user.
 - Hard to change the layout - The only way to change a different layout is by creating a new content item of another type and then copying over the contents.
 - Complex - the user now needs to understand what content will end up where without any visual cues.
+- Mixing the semantic meaning of the content type with how it is rendered visually.
+
+But that was before we had Layouts.
 
 ### Meet Orchard.Layouts ###
-All of the above workarounds and their disadvantages went away with the advent of `Orchard.Layouts` thanks to the `LayoutPart` and its awesome layout editor. Creating a two-column layout is as simple as adding a `Grid` element with a single row and two columns.
+All of the above workarounds and their disadvantages went away with the advent of `Orchard.Layouts`. Creating a two-column layout now could not be simpler. Simply add a `Grid` element with a single row and two columns to the canvas, add any number of content elements, and done. No need for HTML editing, no additional zones necessary, no widgets and layers, and no additional content types necessary.
 
-![](http://i.imgur.com/DUyuNbD.png)
-*Figure 6 - Say hello to the new kid on the block - the LayoutsPart*
+![Figure 6 - Say hello to the new kid on the block - the LayoutsPart and its layout editor](./figures/fig-1-6-layout-editor.png)
+*Figure 6 - Say hello to the new kid on the block - the LayoutsPart and its layout editor*
 
-With the arrival of the `LayoutPart`, creating content layouts is a breeze. So far we only discussed how to deal with a two-column layouts, and as we've seen, it was a pain. But with Layouts, it could not be easier. Even layouts that seemed complex to create before are now dead simple to implement as seen in figure 7 and figure 8.
+The `LayoutPart` editor makes creating content layouts a breeze. So far we only discussed how to deal with a two-column layouts, and as we've seen, it was a pain. But with Layouts, it could not be easier. Even layouts that seemed complex to create before are now dead simple to implement as seen in figure 7 and figure 8.
 
 ![](http://i.imgur.com/QiO0RcC.png)
 *Figure 7 - Complex layouts made simple*

@@ -1,5 +1,5 @@
 ## Custom Elements ##
-Elements are at the core of the Layouts module, and in this chapter, we will see how we can write our own.
+Elements are at the heart of the Layouts module, and in this chapter, we will see how we can write our own.
 
 Writing custom elements essentially boils down to two things:
 

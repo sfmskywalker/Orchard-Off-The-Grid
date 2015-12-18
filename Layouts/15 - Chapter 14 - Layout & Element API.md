@@ -1,4 +1,4 @@
-## APIs ##
+## Layout & Element API ##
 So far we've seen how to write custom elements by creating custom element classes and harvesters. In this chapter, we will learn about APIs at our disposal to programmatically work with elements. More specifically, we will learn how to:
 
 - Work with the element manager to query all available element categories and descriptors;
@@ -747,11 +747,21 @@ We'll continue with our current sample controller and replace the textarea with 
 
 We'll also use the `Canvas` element as the root, which is a requirement for the layout editor.
 
-Another thing we'll change is the usage of the `[Themed]` attribute decorating our controller class. Since the layout editor is designed to work from the backend only, we need to replace the `[Themed]` attribute with the `[Admin]` attribute.
-
+> Another thing we'll change is the usage of the `[Themed]` attribute decorating our controller class. Since the layout editor is designed to work from the backend only, we need to replace the `[Themed]` attribute with the `[Admin]` attribute.
 > To have your controller apply `TheAdmin` theme, either apply the `AdminAttribute` or rename your controller to `AdminController`. If you change your controller's name, be sure to also update the corresponding view folder.
 
-The following code snippet shows the updated controller.
+#### Layout JSON vs Layout Editor JSON ####
+The Layout Editor works with a slightly different JSON schema than the schema used by the layout serializer. The reason for this is that the editor needs additional information about the layout model.
+
+What this means is that we need to be able to convert from and to one format to the other. The Layouts module comes with a service for that: `ILayoutModelMapper`.
+
+When working with `ILayoutEditorFactory`, its `Create` method expects the standard layout JSON format as its first argument. However, when the layout editor submits its data, that data is in the form of the *layout editor JSON*.
+Therefore, whatever data we get back from the layout editor, it needs to be mapped back into the standard layout JSON if we want to deserialize it with the layout serializer.
+
+It's not hard, just something to be aware of.
+
+#### Trying it out: Layout Editor Factory ####
+Taking all of the above into account, the following code demonstrates how to work with the layout editor factory:
 
 ```
 using System;
@@ -766,7 +776,7 @@ using Orchard.Layouts.ViewModels;
 using Orchard.UI.Admin;
 
 namespace OffTheGrid.Demos.Layouts.Controllers {
-    [Admin]
+    [Admin] // The layout editor is designed to work from the back end.
     public class ElementsApiController : Controller {
         private readonly IElementManager _elementManager;
         private readonly IElementDisplay _elementDisplay;
@@ -788,15 +798,15 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
             _modelMapper = modelMapper;
         }
 
-        [ValidateInput(false)]
-        public ActionResult Index(LayoutEditor layoutEditor) {
+        [ValidateInput(false)] // The submitted data may contain HTML.
+        public ActionResult Index(LayoutEditor layoutEditor /* The LayoutEditor type serves as a viewmodel which can be modelbound. */) {
 
             IEnumerable<Element> layout;
             string layoutData = null;
-            
-            if(layoutEditor.Data != null) {
+
+            if (layoutEditor.Data != null) {
                 // The posted layout data is not the raw Layouts JSON format, but a more tailored one specific to the layout editor.
-                // Before we can use it, we need to map it to the raw layout format.
+                // Before we can use it, we need to map it to the standard layout format.
                 layout = _modelMapper.ToLayoutModel(layoutEditor.Data, DescribeElementsContext.Empty).ToList();
 
                 // Serialize the layout.
@@ -810,19 +820,21 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
                 layoutData = _layoutSerializer.Serialize(layout);
             }
 
-            // Create and initialize a new LayoutEditor object.
+            // The session key is used for the IObjectStore service
+            // used by the layout editor to transfer data to the element editor.
+            // The actual value doesn't matter, just as long as its unique within the application.
             var sessionKey = "DemoSessionKey";
+
+            // Create and initialize a new LayoutEditor object.
             layoutEditor = _layoutEditorFactory.Create(layoutData, sessionKey);
 
             // Assign the LayoutEditor to a property on the dynamic ViewBag.
             ViewBag.LayoutEditor = layoutEditor;
 
-            // Render the elements and assign the resulting shape to a property on the dynamic ViewBag.
-            ViewBag.LayoutShape = _elementDisplay.DisplayElements(layout, content: null); ;
-
             return View();
         }
 
+        // Creates an element tree with a default layout (Grid, Row, and two Columns).
         private IEnumerable<Element> CreateDefaultLayout() {
             return new[] { New<Canvas>(canvas => {
                 canvas.Elements.Add(
@@ -831,13 +843,13 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
                     grid.Elements.Add(New<Row>(row => {
                         // Column 1.
                         row.Elements.Add(New<Column>(column => {
-                            column.Width = 8;
+                            column.Width = 6;
                             column.Elements.Add(New<Html>(html => html.Content = "This is the <strong>first</strong> column."));
                         }));
 
                         // Column 2.
                         row.Elements.Add(New<Column>(column => {
-                            column.Width = 4;
+                            column.Width = 6;
                             column.Elements.Add(New<Html>(html => html.Content = "This is the <strong>second</strong> column."));
                         }));
                     }));
@@ -845,6 +857,7 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
             })};
         }
 
+        // An alias to IElementManager.ActivateElement<T>.
         private T New<T>(Action<T> initialize) where T : Element {
             return _elementManager.ActivateElement<T>(initialize);
         }
@@ -852,5 +865,58 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
 }
 ```
 
-Notice that I moved the creation of the initial elements to a private method.
-  
+Notice that I'm reusing the `LayoutEditor` class as an action parameter. This will cause the modelbinder to bind the posted values to an object of that class, which is very convenient, as it means we don't have to create a view model ourselves.
+
+If a non-null value is provided for the `LayoutEditor.Data` property, we use the `ILayoutModelMapper` to parse the posted JSON string into a list of element objects, which we then serialize back to a standard JSON string. The reason I'm doing that is because we need to re-create the `LayoutEditor` object using the layout editor factory, as not all of its properties are being roundtripped.
+
+> In that respect, using a separate view model may have been a better fit, since it makes the distinction clear between the view model being sent to the view (which is more rich in terms of information) and the view model used to model bind the posted data, which has only a subset of the original data.
+
+If there was no data posted, we create a default layout by constructing a tree of elements manually, which we then serialize. Whatever the source of the `layoutData` string, we feed it into the layout editor factory to get a fresh new, properly configured, `LayoutEditor` object.
+
+One final point of interest is the `sessionKey` variable that is being sent into the layout editor's `Create` method. This value is used for the `IObjectStore` service used by the layout editor to transfer data to the element editor. The actual value doesn't matter, just as long as its unique within the application.
+
+> Since this is an implementation detail, perhaps it would have been better to not expose this at all and let the layout editor factory figure out what key it wants to use.
+
+The view is updated with the following code:
+
+```
+@using Orchard.Layouts.ViewModels;
+@{
+    var layoutEditor = (LayoutEditor)ViewBag.LayoutEditor;
+    Style.Include("~/Modules/Orchard.Layouts/Styles/default-grid.css");
+}
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.EditorFor(m => layoutEditor)
+    <button type="submit">@T("Update")</button>
+}
+```
+
+Notice the usage of the `Html.EditorFor<TModel>` HTML helper method. This method will automatically choose the `"LayoutEditor.cshtml"` view that is provided by the Layouts module.
+
+Now, with the updated controller and view in place, this is what our layout editor looks like when run:
+
+![](./figures/fig-100-layout-editor.png)
+
+As you can see, it's the fully-functioning layout editor. We can add and remove elements, and when we hit *Update*, the changes are persisted across form submissions.
+Although we aren't storing the layout data in more durable storage such as a database, it would be easy to do so, since all we need to store and retrieve is a simple layout data string.
+
+Some additional work that would need to be done is handle the deletion of elements. When a user deletes elements from the canvas, those elements are posted back to the controller via the `LayoutEditor.RecycleBin` property. You would model-map that string to a list of elements as well, and then invoke `IElementManager.Removing` to give each element a chance to do some cleanup. Such code would look like this (taken from the `LayoutPartDriver`):
+
+```
+var describeContext = DescribeElementsContext.Empty;
+var recycleBin = (RecycleBin)_mapper.ToLayoutModel(layoutEditor.RecycleBin, describeContext).SingleOrDefault();
+var updater = this; // This requires your controller to impement IUpdater.
+var context = new LayoutSavingContext {
+    Updater = updater,
+    Elements = layout,
+    RemovedElements = recycleBin?.Elements ?? Enumerable.Empty<Element>()
+};
+
+_elementManager.Removing(context);
+```
+
+Notice that the RecycleBin data string actually results in a `RecycleBin` element, which owns the removed elements.
+
+In addition to handling the removal of elements, you would also have to invoke the `IElementManager.Saving` method, which will invoke the `Saving` event on all elements.
+
+> Although there are currently no elements that handle the `Saving` event, elements provided by third-party modules may of course rely on this event.

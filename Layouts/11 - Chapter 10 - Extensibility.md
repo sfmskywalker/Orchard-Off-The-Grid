@@ -9,9 +9,10 @@ But eventually there will be a point where you want complete control over how yo
 
 In this third part, we will learn everything there is to know about writing custom elements and cover the following topics:
 
-- Writing **elements**.
-- Writing **element harvesters**.
-- Writing **container elements**.
+- Writing **elements**;
+- Extending **existing elements**;
+- Writing **element harvesters**;
+- Writing **container elements**;
 - Working with elements **programmatically**
     - We'll learn how to programmatically instantiate elements and render them.
     - We'll learn about various element events that we can hook into.

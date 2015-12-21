@@ -14,7 +14,7 @@ Writing custom container elements boils down to the following steps:
 ### The Container Class ###
 Container elements are instances of classes that inherit from the `Container` abstract base class which lives in the `Orchard.Layouts.Elements` namespace.
 
-The only member that the `Container` class adds is the `Elements` property, which is a list of elements:
+The `Container` class adds single member called `Elements`, which is a list of elements:
 
 ```
 public abstract class Container : Element {
@@ -22,13 +22,13 @@ public abstract class Container : Element {
 }
 ```
 
-This `Elements` list is initialized to an empty list from the constructor, so you don;t have to worry about instantiating that yourself.
+This `Elements` list is initialized to an empty list from the constructor.
 
 ### Element Drivers ###
-When writing custom element classes, you need to implement a driver for that element, even if it contains no actual implementation. This is the same when writing container elements.  
+When writing custom element classes, you need to implement a driver for that element, even if it contains no actual implementation. This is the same when writing container elements.
 
 ### Layout Editor Integration ###
-The most work when creating a custom container goes into making it work with the layout editor. The primary reason for this is the fact that the layout editor has a client side model of elements, and it needs to know what the type of object is to be used on the client.
+Most of the work when creating a custom container goes into making it work with the layout editor. The primary reason for this is the fact that the layout editor has a client side model of elements, and it needs to know what the type of object is to be used on the client.
 
 The layout editor roughly divides elements into two categories:
 
@@ -36,7 +36,6 @@ The layout editor roughly divides elements into two categories:
 - All the rest (Canvas, Grid, Row, Column)
 
 The distinction is made as follows: if a given element type declares its own **Model Map**, it means it has a specific client side (JavaScript) representation of that element. If not, the client side representation is always the **Content** class.
-
 
 ### Layout Model Mapper ###
 Layout model mapping is a conversion process that basically converts a list of `Element` objects into a JSON format that the layout editor can work with, and the other way around: to convert a layout editor data JSON string back into a list of `Element` objects.
@@ -132,20 +131,140 @@ The following table provides a description for each member:
 > The second way is to edit element properties *directly* from the layout editor. Since the layout editor works with its own JSON schema, we need a way to convert this data back to the standard JSON schema. This is where the layout model mappers come into play. 
 
 ### Client Side Support ###
-If you thought model mappers were kind of icky, wait until you see what needs to be done for the client side representation of custom container elements. That process feels arcane to say the least. But fortunately, you were smart enough to read this book, and everything will turn out all right.
+If you thought model mappers were kind of icky, wait until you see what needs to be done for the client side representation of custom container elements. That process might feel somewhat arcane to say the least, but since you're reading this book it will turn out just fine.
 
-To implement the client side story of container elements, we essentially need four things:
+Implementing the client side story of container elements essentially requires the following four steps:
 
-- Implement a client side model of the element
-- Implement a directive (since the layout editor is implemented with AngularJS)
-- Implement a template for the directive
-- Register the element with the element factory.
+1. Implement the client-side model of the element;
+2. Implement the directive (since the layout editor is implemented with AngularJS);
+3. Implement the template for the directive;
+4. Register the element with the client-side element factory.
 
+Once you got all that in place, you'll be able to drag & drop your custom container element onto the canvas, and add any other elements to it (depending on the allowable element types that you specified when implementing the client-side model).
 
-
+Now that we've seen the overview of the process, let's dive in and see what it looks like when actually implementing a container element.
 
 ### Custom Container Walkthrough ###
-The best way to understand how everything fits together is by 
+In this walkthrough, we'll implement a custom container element that enables the user to specify a background image. Once you understand how to implement container elements, you'll be able to create any other type of elements with any number of properties, since the principles will be the same.
+
+We'll call our element the *Tile* element, which has the following characteristics:
+
+- A Tile element can contain any other types of elements.
+- A Tile element can optionally have one background image.
+
+Since the Tile element stores a reference to a content item (the background image), we'll need to make sure that we export the content item identity, since the content item id (a primary key value) will be useless when importing.
+
+We'll also need to add a project reference to the *Orchard.MediaLibrary* project, since we'll be using the `ImagePart` type from that project.
+
+Let's see how it all works.
+
+#### The Tile Element ####
+Create the following class in the Elements folder of our module:
+
+```
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Orchard.Layouts.Elements;
+using Orchard.Layouts.Helpers;
+
+namespace OffTheGrid.Demos.Layouts.Elements {
+    public class Tile : Container {
+        public override string Category {
+            get { return "Demo"; }
+        }
+
+        public int BackgroundImageId {
+            get {
+                var data = this.Retrieve("BackgroundImageId", () => "");
+                return data.Split(',').Select(Int32.Parse).ToArray();
+            }
+            set {
+                this.Store("BackgroundImageIds", String.Join(",", value));
+            }
+        }
+    }
+}
+```
+
+Notice that we're storing a list of integers that represent the selected image content IDs.
+
+#### The Tile Element Driver ####
+Create the following class in the Drivers folder:
+
+```
+using System;
+using System.Linq;
+using Orchard.ContentManagement;
+using Orchard.Layouts.Framework.Drivers;
+using Orchard.Layouts.Helpers;
+
+namespace OffTheGrid.Demos.Layouts.Elements {
+    public class TileDriver : ElementDriver<Tile> {
+        private IContentManager _contentManager;
+
+        public TileDriver(IContentManager contentManager) {
+            _contentManager = contentManager;
+        }
+
+        protected override void OnExporting(Tile element, ExportElementContext context) {
+            // Get the list of selected background content item ids.
+            var backgroundImageIds = element.BackgroundImageIds;
+
+            // Load the actual background content items.
+            var backgroundImages = _contentManager.GetMany<IContent>(backgroundImageIds, VersionOptions.Latest, QueryHints.Empty);
+
+            // Use the content manager to get the content identities.
+            var backgroundImageIdentities = backgroundImages.Select(x => _contentManager.GetItemMetadata(x).Identity).ToList();
+
+            // Add the content item identities to the ExportableData dictionary.
+            context.ExportableData["BackgroundImages"] = String.Join(",", backgroundImageIdentities);
+        }
+
+        protected override void OnImporting(Tile element, ImportElementContext context) {
+            // Read the imported content identities from the ExportableData dictionary.
+            var backgroundImageIdentities = context.ExportableData.Get("BackgroundImages", "").Split(',');
+
+            // Get the imported background content item from the ImportContentSesison store.
+            var backgroundImages = backgroundImageIdentities.Select(x => context.Session.GetItemFromSession(x)).Where(x => x != null);
+
+            // Get the background content item id (primary key value) for each background image.
+            var backgroundImageIds = backgroundImages.Select(x => x.Id);
+
+            // Assign the content ids to the BackgroundImageIds property so
+            // that they contain the correct values, instead of the automatically imported values.
+            element.BackgroundImageIds = backgroundImageIds;
+        }
+    }
+}
+```
+
+The driver handles the following things:
+
+- Import/Export of the selected background image content items.
+
+#### The Tile Model Map ####
+
+```
+using Orchard.Layouts.Services;
+
+namespace OffTheGrid.Demos.Layouts.Elements {
+    public class TileModelMap : LayoutModelMapBase<Tile> {
+    }
+}
+```
+
+#### The Client-Side Tile Model ####
+#### The Client-Side Tile Directive ####
+#### The Client-Side Tile Directive Template ####
+#### Assets.json ####
+
+> When the Task Runner Explorer shows the message "Failed to load. See output window", this is usually an indication that you haven't installed the NodeJS packages. This is easily fixed by opening the **Package.json** file in the **Solution Items/Gulp** solution folder, and simply saving that file (CTRL + S). When you do, Visual Studio will start downloading NodeJS packages, including Gulp. Gulp is used to compile, minify and bundle files such as CSS, LESS, JavaScript and TypeScript. Installing the various NodeJS packages may take a few minutes, so keep a close eye on the status bar (which should read "Installing packages" while installing packages, and "Installing paklages complete" when done.
+> 
+> Once the packages have been installed, click the refresh icon in the Task Runner Explorer and wait a second for it to refresh. Now you should see the **Tasks** and its child nodes **build**, **rebuild** and **watch**. Right-click on *build* and then left-click *Run* to have your Assets.json file executed.
+
+#### Registering the Tile.js Script ####
+
 
 ### Summary ###
 In this chapter, we have seen how we can extend the list of available elements by implementing our own element classes. We learned about the `Element` class itself as well as the `ElementDriver<T>` class. We then continued and created a custom element called the `Clock`, demonstrating what it takes to provide custom rendering as well as an element editor. We also learned about implementing element editors using the *Forms API* provided by the `Orchard.Forms` module, which is great for basic element editors where there is no need for more advanced editor UIs.

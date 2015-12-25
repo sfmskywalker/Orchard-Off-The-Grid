@@ -420,16 +420,15 @@ However, these elements will probably not be very useful before Orchard has supp
 
 So where does that leave us?
 
-Unless you want to display a UI element on specific pages, my advice is to not use them until Orchard unifies their Widgets and Elements story. Which I'm happy to convey is the next big thing on the list of yours truly. :)
+Unless you want to display a UI element on specific pages, my advice is to not use them until Orchard unifies their Widgets and Elements story.
 
 ### Summary ###
-In this chapter, we got to meet all of the elements that ship with Orchard out of the box, except for one category: **Form**, which is part of the *Dynamic Forms* module and covered in another book of this series.
+In this chapter, we got to meet all of the elements that ship with Orchard out of the box, except for one category: **Form**, which is part of the *Dynamic Forms* module and outside the scope of this book.
 
 We went over each element in detail, and should give you a good understanding on how each one works and when to use them.
 In the most scenarios, you'll most likely use the layout, content and media elements.
 
-However, `Orchard.Layouts` would not be a true Orchard module if we couldn't extend it with out own element types. One way to extend the available elements is by creating Snippets, which are nothing but Razor files whose name end in `Snippet.cshtml`. This is useful in cases where there's no further configuration required. However, in many cases you probably do want to allow the user to provide information to configure your elements. For those scenarios, you would write your own elements and maybe even element harvesters as part of your own custom module. We will look into that in detail in Part 3 - Extensibility.
-But we're not there yet.
+The Layouts module is highly extensible, and there are various ways to extend the set of elements. One such way to is by creating *snippets* by creating Razor views whose name end in `Snippet.cshtml`. This is useful in cases where there's no further configuration required. However, in many cases you probably do want to allow the user to provide information to configure your elements. For those scenarios, you would write your own elements and maybe even element harvesters as part of your own custom module. We will look into that in detail in *Part 3 - Extensibility*.
 
 In the next chapter, we will look at **Layout Templates**, why they are useful and how to use them.   
 

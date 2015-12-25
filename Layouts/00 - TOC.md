@@ -2,12 +2,12 @@
 
 * **Introduction**
 * **Part 1**
-	* Layouts
+	* **Chapter 1 - Layouts**
 		* What are Layouts
 		* Why use Layouts
 		* About Grid Frameworks
 		* Summary
-	* First Look
+	* **Chapter 2 -  First Look**
 		* The Layouts Feature
 		* Layout Part
 		* Elements
@@ -17,7 +17,7 @@
 		* Drag & Drop
 		* Rendering Layouts
 		* Summary
-	* Meet the Elements
+	* **Chapter 3 - Meet the Elements**
 		* Layout Elements
 		* Content Elements
 		* Media Elements
@@ -27,13 +27,16 @@
 		* UI Elements
 		* Placeable Content Elements (TODO)
 		* Widget Elements (TODO)
-	* Layout Templates
-    * Element Blueprints
-	* Elements as Widgets
-	* The Element Token
-	* Element Rules
+		* Summary
+	* **Chapter 4 -  Layout Templates**
+		* The Layout Content Type
+		* Summary
+    * **Chapter 5 -  Element Blueprints**
+	* **Chapter 6 -  Elements as Widgets**
+	* **Chapter 7 -  The Element Token**
+	* **Chapter 8 -  Element Rules**
 * **Part 2**
-	* Theming
+	* **Chapter 9 -  Theming**
     	* Introduction to Shapes
     	* Demystifying Shapes
         	* What is the .NET type of a shape?
@@ -45,36 +48,26 @@
         	* Element Shape Alternates
     	* Demo: Creating custom alternates for Element shapes
     	* Handling Content Part Elements
-	* Bootstrap
+    	* Summary
+	* **Chapter 10 -  Bootstrap**
     	* Analyzing which templates to override
     	* Overriding default templates
     	* Responsive Layouts
-	* Snippets
+    	* Summary
+	* **Chapter 11 -  Parameterized Snippets**
     	* What are Snippets
     	* Configurable Snippets
-	* Summary
+		* Creating Custom Editors
+		* Summary
 * **Part 3**
-    * Extensibility
-        * Custom Elements
-        * Anatomy of an Element
-            * Element Descriptor
-            * Element Type
-    * Creating Custom Elements
-    * Element Harvesters
-    * Element Types
-    * Element Drivers
-    * Rendering Elements
-	* Walkthroughs
-    	* Extending existing elements with custom properties and editors
-    	* Writing Custom Element Harvesters
-    	* Writing Custom Elements
-    	* Writing Custom Container Elements
-		* Element Drivers
-		* FormsElementDriver
-	* API
-    	* IElementDisplay
-    	* ...
+    * **Chapter 12 -  Extensibility**
+    * **Chapter 13 -  Custom Elements**
+    * **Chapter 14 -  Container Elements**
+    * **Chapter 15 -  Element Harvesters**
+    * **Chapter 16 -  Extending Elements**
+	* **Chapter 17 -  Layout APIs**
 * **Part 4**
-    * Walkthrough: Creating a SlideShowPart
-    * Walkthrough: Creating Websites with Layouts
-* ** Index **
+    * **Chapter 18 -  Walkthrough: Creating Slide Shows with Layouts**
+    * **Chapter 19 -  Walkthrough: Creating Websites With Layouts**
+* **Epilogue**
+* **Index**

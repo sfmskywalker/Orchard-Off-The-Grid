@@ -1,4 +1,4 @@
-## Layout Templates ##
+## Layout Templates
 In this chapter, we will look at Layout Templates, what they are and what they bring to the table.
 In a nutshell, Layout Templates, or Templates for short, are content types that have the `LayoutPart` attached, but which is configured to be used as a template. Any content item of such content types are considered templates that can be applied to other content items that have the `LayoutPart` attached.
 
@@ -6,7 +6,7 @@ If you're familiar with ASP.NET WebForms and Master Pages, you can regard Layout
 
 This is great for scenarios where you have a layout that is commonly used across your content pages. For example, if you have a bunch of Page content items where you want to use a two-column layout with a one-column row before and three-column row after, instead of recreating this layout for each Page, you can create this layout once as a template, and apply this template to each of your Page content items, and just add content elements to the various columns.
 
-### The Layout Content Type ###
+### The Layout Content Type
 When the `Layouts` feature is enabled, it defines a new content type called `Layout`, and consists of the following parts:
 
 - Common Part
@@ -20,7 +20,7 @@ It's the `LayoutPart` that we're interested in. When you go to the content defin
 
 *Figure 50 - The Layout Part of the Layout type is configured to be used as a template*
 
-### Trying it out ###
+#### Trying it out
 In this demo, we will create a new Layout content item with a grid, some rows and columns, and apply that to a few Page content items.
 
 First, we need to create the Layout content item to be used as a template. To do that, click on the *Layouts* menu item from the admin menu and then click the *Create New Layout* button on the top right side of the window. Doing so will take you to a new screen where you get to enter a *Title* and design a layout. I used *"Master Layout"* as the title and added a grid with three rows and some columns (figure 51).
@@ -59,12 +59,12 @@ Publish this new template, go back to the *Master Layout* content item, and add 
 
 > Don't confuse the *Template* content type with the *Layout* content type. Although both represent a template, they are different kinds of templates: The *Template* type represents a shape template, whereas the *Layout* content type represents a layout template.
 
-### Sealed elements and Placeholder Containers ###
+### Sealed elements and Placeholder Containers
 When creating Layout templates, you are not limited to just creating grids as we have just seen. However, as soon as you add an element to a container on a layout template, its child layouts (the layouts that use that template) can no longer add more elements to that container, because it will have been *sealed*.
 
 > Sealed elements are elements part of a layout template and can therefore not be edited in child layouts.
 
-If you did want child layouts be able to add additional elements to a sealed container, al you have to do is add a nested child container element to the container in the Layout content item.
+If you did want child layouts be able to add additional elements to a sealed container, all you have to do is add a nested child container element to the container in the Layout content item.
 
 For example, in our footer demo, we added a Shape element to the footer column in the layout template (*Master Layout*). If we go to Page 1 or Page 2's edit screen, we'll find that we can no longer add elements to that footer column, since, as we just learned, that column has been sealed. To change this, go back to the *Master Layout* and add the Canvas element above the Shape element. This will enable us to still add content in the footer column above the sealed Shape element.
 

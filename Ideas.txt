@@ -16,6 +16,8 @@ Ideas for series title:
 	-   Drivers from the ground up.
 - Dynamic Forms
 	> Writing a File Upload element.
+	> Prepopulating forms.
+	> Custom form field harvester (external CRM systems)
 - Workflows
 - Projections
 - Taxonomies

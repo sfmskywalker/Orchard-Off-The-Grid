@@ -1,4 +1,4 @@
-## The Element Token ##
+## The Element.Display Token
 Orchard has support for Tokens since [version 1.3](https://orchard.codeplex.com/releases/view/69668), and provides a way to inject system-wide variables into content. Out of the box, Orchard provides many tokens, and the following small list is just a tiny fraction of them:
 
 - *Content.Author* - Renders the author name of the content item.
@@ -11,7 +11,6 @@ There are various places where you can specify tokens. For example, the `Orchard
 
 This latter case is interesting, because with Tokens and Elements in place, we can easily bind a token to potentially complex markup in the form of elements, where the user simply has to insert a token, and let orchard handle rendering the specified element.
 
-### The Element.Display Token ###
 To realize that scenario, the `Orchard.Layouts` module adds another token to the system: **Element.Display:***, where the asterisk is to be replaced with an actual element type name.
 
 > This token is provided by the `Element Tokens` feature provided by the Layouts module.
@@ -28,7 +27,7 @@ However, we can pre-configure elements and render them instead.
 
 Let's see the token in action.
 
-#### Demo: Using Element.Display ####
+#### Trying it out: Using Element.Display ####
 ##### Step 1 #####
 Make sure the `Element Tokens` feature is enabled.
 

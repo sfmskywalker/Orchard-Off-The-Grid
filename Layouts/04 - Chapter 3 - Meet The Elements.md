@@ -1,6 +1,7 @@
-## Meet the Elements ##
+## Meet the Elements
 In this chapter, we'll go over all of the available elements in the default Orchard distribution. Most elements should be self-explanatory to use, but I think that some of them could use a little bit of a background to get a good understanding on how to use them.
 
+### Element Cateogies
 Elements are categorized using the following categories:
 
 * Layout
@@ -43,7 +44,7 @@ The following is the complete list of available elements when all features (exce
     * **TagsPart**
     * **TitlePart**
 * Fields
-    * *(Any content field attached to the content type will be made available as an element)*
+    * *Any content field attached to the content type will be made available as an element*
 * Snippets
     * **Shape**
     * *(Any Razor file ending in `Snippet.cshtml` in the current theme will be made available as an element)*
@@ -51,19 +52,21 @@ The following is the complete list of available elements when all features (exce
     * **Breadcrumbs** *(requires the `UI Elements` feature to be enabled)*
     * **Menu** *(requires the `UI Elements` feature to be enabled)*
     * **Notifications** *(requires the `UI Elements` feature to be enabled)*
+* Widgets
+	* All widgets are available as elements
 
 > The `Orchard.DynamicForms` module is another new module since Orchard 1.9. This module provides its own set of elements, but it's outside the scope of this book to handle them all. Please checkout **Orchard Off The Grid - Dynamic Forms** for everything you ever wanted to know about the Dynamic Forms module.
 
 Let's go over each category, and in turn their elements, one by one.
 
-### Layout ###
+#### Layout
 Elements in this category are typically container elements that layout their child elements in a certain way. Certain container elements only support certain child element types. For example, the **Grid** element can only contain **Row** elements, which in turn can only contain **Column** elements.
 
 > As mentioned earlier, this notion of a container only supporting a particular type of child elements, may very well change in a future version of the layout editor, which is one of the goals of the [Ayos](https://github.com/IDeliverable/Ayos) project.
 
 Let's go over each element in this category.
 
-#### Grid ####
+##### Grid
 The **Grid** element is a container element that can hold only one type of child elements: *Row*.
 We use the Grid element whenever we want to create a layout of elements. Grids can contain rows, and rows in turn can contain columns. Although the Layouts module is named that way because it enables users to create layouts, it is thanks to this Grid element that the Layouts module is able to achieve that in the first place.
 So it is fair to say that the Grid is a key element.
@@ -76,7 +79,7 @@ The Grid element has no content properties, but does have the common element pro
 
 When you add a new Grid element to the design surface, it will not contain any Row elements automatically. You will need to drag & drop Row elements yourself.
 
-#### Row ####
+##### Row
 The **Row** element, like the Grid element, is a container element. However, this element can only contain **Column** elements as its children, and the Row itself can only be a child of a Grid element.
 
 We mentioned that the Layout category contains a **Row** element. However, when we look at the layout editor toolbox, there are definitely more **Row** elements than just one it seems (see figure 20):
@@ -85,7 +88,7 @@ We mentioned that the Layout category contains a **Row** element. However, when 
 
 *Figure 21 - Preconfigured Row elements*
 
-What we see here is not 7 types of Row elements, but simply 7 preconfigurations of a single Row element. The first Row toolbox item will add a single Row element with 1 Column element, the second toolbox item will add a single row with 2 columns, etc.
+What we see here is not 7 types of Row elements, but simply 7 pre-configurations of a single Row element. The first Row toolbox item will add a single Row element with 1 Column element, the second toolbox item will add a single row with 2 columns, etc.
 
 The Row element has one specific toolbar command specific to itself: **Distribute columns evenly**.
 As its name implies, this command will evenly distribute the width of the columns of the row based on a *maximum width of 12* units. For example, if a Row has 4 columns with varying widths, and the maximum width is 12 column units, each column will be resized to be exactly 3 units wide.
@@ -96,7 +99,7 @@ The Row element has no content properties, but does have the common element prop
 
 *Figure 22 - The Row element*
 
-#### Column ####
+##### Column
 The **Column** element, you guessed it, is also a container element. Unlike the Grid and Row elements, the Column element can hold any type of child elements (except for Row and Column elements). Itself, however, can only be a child of a Row element.
 A column has two distinctive properties: **Width** and **Offset**. Together, these values make up the **total size** of the column. *Width*, *Offset* and *Total Size* are expressed in a unit called *columns*. A given Row can hold up to 12 column units. What this means is that the total number of column units occupied by column elements in a row cannot exceed 12. For example, if a row has a single column, that column's width cannot be greater than 12. If a row has two columns, the sum of the two column's widths cannot exceed 12. One column could be 4 while another could be 8, making a total of 12. Similarly, if a column has an offset of 1 and a width of 4, its size is 5, which means that the second column cannot be more than 7 columns wide.
 
@@ -133,7 +136,7 @@ The Column element has no content properties, but does have the common element p
 
 *Figure 26 - The Column element*
 
-#### Canvas ####
+##### Canvas
 The **Canvas** element is the last element in this category and, too, is a container element. Like the Column element, the Canvas can contain any type of element (except for Row and Column elements). Unlike the Column element, the Canvas element can be added to any other container element (except for Grid and Row, since they have an exclusive whitelist of allowed children).
 
 Whenever you create a new layout, that layout always start with a root element of type Canvas, which you'll notice when creating a new Page content item.
@@ -148,13 +151,13 @@ The Canvas element has no content properties, but does have the common element p
 
 And this concludes the *Layout* category of elements.
 
-### Content ###
+#### Content
 The Content category contains all elements that have to do with, unsurprisingly enough, contents.
 
-#### Break ####
+##### Break
 The Break element is one of the simplest ones. It has content properties, but does have the common element properties (HTML ID, CSS Classes, CSS Styles and Visibility Rule). The element maps directly to the `<hr>` HTML element.
 
-#### Content Item ####
+##### Content Item
 The **Content Item** element is very similar to the Content Picker Field and enables the user to select one or more content items to render inline on the design surface.
 When dropping or editing a Content Item element, the user is presented with a dialog window displaying the content properties of the element (see figure 28). The element has two content properties:
 
@@ -167,7 +170,7 @@ When dropping or editing a Content Item element, the user is presented with a di
 
 Being able to select existing content items and render them using custom display types is a very powerful and flexible feature, as it enables you to place content anywhere you like in any display type you want (which can be used for theming). It's pretty close to the way widgets works, except for the fact that you can't reuse widgets.
 
-#### Heading ####
+##### Heading
 The **Heading** element maps directly to the `<h1>` to `<h6>` HTML elements and have the following content properties:
 
 - Level
@@ -181,7 +184,7 @@ The `Level` indicates the size of the heading and ranges from 1 to 6. For exampl
 
     <h6>Hello Layouts!</h6>
 
-#### Html ####
+##### Html
 The **Html** element is probably the most commonly used one when it comes placing content onto the design surface. It has a single content property called *HTML*, which stores the HTML markup. Use this element whenever you want to display textual content anywhere on the design surface.
 
 ![Figure 30 - the content properties of the Html element](http://i.imgur.com/DG0EGTq.png)
@@ -190,14 +193,14 @@ The **Html** element is probably the most commonly used one when it comes placin
 
 The HTML editor you see when editing the HTML element is rendered using the *html* flavor, which means that the editor that appears depends on which feature you have enabled. By default, the `TinyMce` feature is enabled, but if you enable the `CKEditor` feature, that's the editor you'll see when editing Html elements.
 
-#### Markdown ####
+##### Markdown
 The **Markdown** element is functionally the same as the the Html element, but with the difference that it uses Markdown syntax, which gets transformed into HTML when being rendered on the front-end.
 
 ![Figure 31 - the content properties of the Markdown element](http://i.imgur.com/JIG3mol.png)
 
 *Figure 31 - the content properties of the Markdown element*
 
-#### Paragraph ####
+##### Paragraph
 The **Paragraph** element maps directly to the `<p>` HTML element and enables the user to add individual paragraphs to the page. In case you're wondering why you would want to use this element over the Html element, here's the idea: all elements have common properties such as HTML ID, HTML Class and Html Style. These property values are rendered as HTML attributes on the HTML tag output of the element. When the Html element is rendered and has a value for at least one of the three common properties, a surrounding `<div>` element is rendered onto which the common properties are rendered as attributes. Now, there may be occasions where you actually want these common property values to be rendered as attributes on a `<p>` tag directly instead of a surrounding `<div>` element. That's when you use the Paragraph element.
 
 ![Figure 32 - the content properties of the Paragraph element](http://i.imgur.com/0toAmwM.png)
@@ -214,7 +217,7 @@ Figure 33 shows the rendered output of the Paragraph content as shown in figure 
 
 As you can see, the `<p>` start and end tag have been added automatically.
 
-#### Projection ####
+##### Projection
 The **Projection** element is similar to the **Projection Part** in that it allows the user to select a **Query** to project to a list of content items to a selected **Layout**. Layout in this context means the Query Layout and has nothing to do with the Layouts module itself.
 
 > In order to make this element available from the toolbox, you need to enable the **Projection Element** feature.
@@ -232,7 +235,7 @@ Like the Projection Part, the Projection element has the following properties:
 
 *Figure 34 - the content properties of the Projection element*
 
-#### Text ####
+##### Text
 The **Text** element is similar to the Html and Paragraph elements combined, in that it uses a simple textarea input control for its content input and renders that input as raw HTML. It is basically like the Html element, but without a fancy HTML editor such as TinyMce. Because of this similarity, you will probably never use the Text element since it has nothing to add in addition to the Html element, and this element may even become deprecated in a future version of Orchard. But since it's currently part of the distribution, I wanted to cover this element nonetheless for the sake of being complete.
 
 ![Figure 35 - the content properties of the Text element](http://i.imgur.com/5p4uYtw.png)
@@ -241,10 +244,10 @@ The **Text** element is similar to the Html and Paragraph elements combined, in 
 
 And that's it for the Content category. Next, we'll check out the elements in the Media category.
 
-### Media ###
+#### Media
 The **Media** category contains all elements that display some form of media. Out of the box, Orchard comes with three types of Media elements.
 
-#### Image ####
+##### Image
 The **Image** element, quite simply, allows the user to pick a single image content item from the Media Library. When rendered on the front-end, the element renders the `<img>` HTML element. Choose the Image element when:
 
 - You only need to display a single image per element.
@@ -254,7 +257,7 @@ The **Image** element, quite simply, allows the user to pick a single image cont
 
 *Figure 36 - the content properties of the Image element*
 
-#### Media Item ####
+##### Media Item
 The **Media Item** element is similar to the Image element, except for a few key differences. First of all, it allows the user to pick more than one media item. Secondly, any type of media is allowed here. Also, the user can control what display type to use when rendering the selected media items. The Media Item element is useful when:
 
 - You want to display a list of various types of media items..
@@ -264,14 +267,14 @@ The **Media Item** element is similar to the Image element, except for a few key
 
 *Figure 37 - the content properties of the Media Item element*
 
-#### Vector Image ####
+##### Vector Image
 The **Vector Image** element is similar to the Image element, but only supports vector graphics such as `.svg`. In addition to a selected media item, the Vector Image element has two additional properties: *Width* and *Height*, both expressed in number of pixels. These values will be rendered as `width` and `height` attributes on the `<img>` HTML tag.
 
 ![Figure 38 - the content properties of the Vector Image element](http://i.imgur.com/cPyX12S.png)
 
 *Figure 38 - the content properties of the Vector Image element*
 
-### Parts ###
+#### Parts
 The **Parts** category contains a special kind of elements, because the contents of this category depends on two conditions:
 
 - Have their `Placeable` property set to `true`.
@@ -279,7 +282,7 @@ The **Parts** category contains a special kind of elements, because the contents
 
 Part elements are useful when you want to allow the user to provide content for them in the "normal: way, using the editor shapes as provided by their drivers, but let the user control where they appear within the layout.
 
-#### Placeable ####
+##### Placeable Parts
 The `Placeable` property is a new part property introduced with the Layouts module, and controls whether the content part is harvested by the `ContentPartHarvester` as an element. By default, the `Placeable` property is set to `true` for the following content parts:
 
 - BodyPart
@@ -339,7 +342,7 @@ This principle works the same for all other parts, not just the Title Part.
 
 I think this type of element harvester really goes to show what is possible with the Layouts module, which we'll get to into much more depth when we get to Part 3 - Extensibility.
 
-### Fields ###
+#### Fields
 The **Fields** category is similar in nature to the Parts category, the differences being that only content fields attached to the current content item's type are displayed, and that there is no *Placeable* property for content fields, which means that all contnrt fields are placeable when attached to a content type (or more accurately: to content parts of a content type).
 
 To see how this works, we'll add a `TextField` content field to the *Page* content type and call it *Author*.
@@ -358,10 +361,10 @@ Users can now place the Author text field anywhere they want and hide the defaul
 
 > You'll notice that when you initially place the Author field element onto the design surface, it will not have a value. That's because the Author text field does not initially have a value. After providing a value (e.g. "John") and then saving the page, you'll see that change reflected as part of the Author field element's value.
 
-### Snippets ###
+#### Snippets
 The **Snippets** category holds two types of elements by default: One is a generic *Shape* element, and the others are based on the existence of *specifically named Razor view files*. We'll see how that works in a moment. First, let's meet the Shape element and see how it works.
 
-#### Shape ####
+##### Shape
 The **Shape** element is a very simple element that has just one content property: *Shape Type*. If you provide the shape type of an existing shape here, then that shape will be rendered wherever you place the Shape element. As simple as that.
 
 Let's look at an example.
@@ -388,7 +391,7 @@ Now publish the page and switch to the front-end. You'll now see the `BadgeOfHon
 
 Besides using shapes provided by the current theme, you could just as well use shapes provided by other modules (unless those modules inject required information into that shape during creation). You could even enable the **Templates** feature, create a template, and use that as the shape type for the Shape element. This unlocks some truly interesting scenarios, since the Templates module uses Razor syntax. Being able to create snippets of Razor from the back-end and then insert them into your layouts is powerful stuff.
 
-#### Snippet Elements ####
+##### Snippet Elements
 The second type of elements part of the Snippets category are called *snippets*. Snippets are very similar to the Shape element, but the key difference being that instead of you providing the shape type name, the Snippet element harvester provides elements based on the existence of Razor files in the current theme whose file names end in `Snippet.cshtml`.
 
 > Before you can use Snippets, you need to enable the *Layout Snippets* feature. 
@@ -405,7 +408,7 @@ Go to the Page content item edit screen and notice that there's a new element in
 
 *Figure 49 - A new element called Logo is now available.*
 
-#### UI ####
+#### UI
 > This feature is new as part of Orchard 1.10
 
 The **UI** category currently consists of just three elements, and are kind of experimental.
@@ -421,6 +424,9 @@ However, these elements will probably not be very useful before Orchard has supp
 So where does that leave us?
 
 Unless you want to display a UI element on specific pages, my advice is to not use them until Orchard unifies their Widgets and Elements story.
+
+#### Widgets
+This category contains all widgets as elements, which are provided by the `WidgetElementHarvester`. This harvester registers an element descriptor for each available widget. When you place a widget element onto a layout, the widget element harvester will create an actual widget content item for you and render that one on the front end. The created widget is not linked with any zone or layer, since it is linked with the content item containing the layout. When the content item is displayed, all of its elements, including widget elements, are displayed.
 
 ### Summary ###
 In this chapter, we got to meet all of the elements that ship with Orchard out of the box, except for one category: **Form**, which is part of the *Dynamic Forms* module and outside the scope of this book.

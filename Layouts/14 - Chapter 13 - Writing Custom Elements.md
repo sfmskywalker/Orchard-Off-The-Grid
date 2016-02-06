@@ -1,152 +1,17 @@
-## Custom Elements ##
+## Writing Custom Elements
 Elements are at the heart of the Layouts module, and in this chapter, we will see how we can write our own.
 
-Writing custom elements essentially boils down to two things:
+Writing custom elements typically involve the following steps:
 
-1. Implement a class that drives from `Element`.
-2. Implement a driver for your element class. Your driver needs to be derived from `ElementDriver<T>`, where the generic `T` type argument is to be substituted with your custom element type.
+1. Create a class that derives from `Element` or any of its child classes. The only required member that needs to be implemented is the abstract `Category` property. 
+2. Create a class that derives from `ElementDriver<T>`, where `T` is your element's class. This class does not require any members, but needs to be there in order for your element type to be discoverable due to the way the `TypedElementHarvester` works. We'll look into element harvesters later on.
+3. Although not strictly required, create a Razor view for your element for the `"Detail"` display type. If you don't provide a view, a default view will be used which simply displays the name of the element.
+4. Also not strictly required, create a design-time view for your element for the `"Design"` display type. If you don't provide a design-time view, the view for the `"Detail"` display type will be used. This view is used when your element is rendered by the layout editor.
 
-### The Element Class ###
+### The Element Class
 Elements are instances of .NET classes that inherit from the `Element` abstract base class which lives in the `Orchard.Layouts.Framework.Elements` namespace. Sub classes typically add properties to their type definition and override inherited properties such as `Category`.
 
-The following table is a complete list of all the properties of the `Element` class:
-
-<table>
-<thead>
-    <tr>
-        <th>Property</th>
-        <th>Type</th>
-        <th>Modifier</th>
-        <th>Default</th>
-        <th>Description</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td><strong>Category</strong></td>
-        <td>String</td>
-        <td>abstract</td>
-        <td></td>
-        <td>The category of the element. Elements are grouped by their category.</td>
-    </tr>
-    <tr>
-        <td><strong>Type</strong></td>
-        <td>String</td>
-        <td>virtual</td>
-        <td>The .NET type name (GetType().Name)</td>
-        <td>The type name of the element. This value is used to deserialize elements.</td>
-    </tr>
-    <tr>
-        <td><strong>DisplayText</strong></td>
-        <td>LocalizedString</td>
-        <td>virtual</td>
-        <td>The .NET type name, made camel friendly (T(GetType().Name.CamelFriendly()))</td>
-        <td>The "friendly" name of the element that is used in the UI.</td>
-    </tr>
-    <tr>
-        <td><strong>Description</strong></td>
-        <td>LocalizedString</td>
-        <td>virtual</td>
-        <td>A string based on the DisplayText (T("{0} element.", DisplayText))</td>
-        <td>The description of the element that is used in the UI.</td>
-    </tr>
-    <tr>
-        <td><strong>ToolboxIcon</strong></td>
-        <td>String</td>
-        <td>virtual</td>
-        <td>\uf1c9</td>
-        <td>The Font Awesome unicode character to display as the element's icon in the toolbox.</td>
-    </tr>
-    <tr>
-        <td><strong>IsSystemElement</strong></td>
-        <td>Boolean</td>
-        <td>virtual</td>
-        <td>false</td>
-        <td>This is used by the <em>TypedElementHarvester</em>, which yields element descriptors based on types derived from <em>Element</em>. If the element is a &quot;system&quot; element, it is not harvested. This is typically used in conjunction with other element harvesters that provide element descriptors based on other sources.</td>
-    </tr>
-    <tr>
-        <td><strong>HasEditor</strong></td>
-        <td>Boolean</td>
-        <td>virtual</td>
-        <td>true</td>
-        <td>This used by the layout editor to determine whether or not to show the element editor dialog when an element is being dragged & dropped from the toolbox onto the canvas and whether or not to display the <em>edit</em> glyph. If your custom element does not provide an editor, you should override this property and return false.</td>
-    </tr>
-    <tr>
-        <td><strong>HtmlId</strong></td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-        <td>Stores the configured HTML ID value that the user can set via the layout editor. Default templates typically render this value on the <strong>id</strong> attribute of the root tag. For example: &lt;div id=&quot;@Model.Element.HtmlId&quot;&gt;</td>
-    </tr>
-    <tr>
-        <td><strong>HtmlClass</strong></td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-        <td>Stores the configured CSS class value that the user can set via the layout editor. Default templates typically render this value on the <strong>class</strong> attribute of the root tag. For example: &lt;div class=&quot;@Model.Element.HtmlClass&quot;&gt;</td>
-    </tr>
-    <tr>
-        <td><strong>HtmlStyle</strong></td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-        <td>Stores the configured CSS inline-style value that the user can set via the layout editor. Default templates typically render this value on the <strong>style</strong> attribute of the root tag. For example: &lt;div style=&quot;@Model.Element.HtmlStyle&quot;&gt;</td>
-    </tr>
-    <tr>
-        <td><strong>Rule</strong></td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-        <td>Stores the display rule for the element. The rule engine used is the same as the one being used by the Widgets module. The user can provide a rule expression via the layout editor.</td>
-    </tr>
-    <tr>
-        <td><strong>Container</strong></td>
-        <td>Orchard.Layouts.Elements.Container</td>
-        <td></td>
-        <td></td>
-        <td>A reference to the containing element, if any.</td>
-    </tr>
-    <tr>
-        <td><strong>Data</strong></td>
-        <td>Orchard.Layouts.Framework.Elements.ElementDataDictionary</td>
-        <td></td>
-        <td>An instance of the <em>ElementDataDictionary</em> type so that derived types can access this dictionary right off the bat.</td>
-        <td>The <em>ElementDataDictionary</em>, which inherits from <em>Dictionary&lt;string, string&gt;&lt;/em&gt;, provides storage to child classes of the Element class. Child classes typically provide additional public properties whose getters and setters read from and write to the Data dictionary.</td>
-    </tr>
-    <tr>
-        <td><strong>ExportableData</strong></td>
-        <td>Orchard.Layouts.Framework.Elements.ElementDataDictionary</td>
-        <td></td>
-        <td>An instance of the <em>ElementDataDictionary</em> type.</td>
-        <td>Provides an additional storage bag for when the element is being exported. Most elements won't typically have to use this bag, as the Data property is automatically exported. The ExportableData property is typically used for elements that reference content items by ID, so they need to export the content items' Identity instead of ID, which is a primary key database value.</td>
-    </tr>
-    <tr>
-        <td><strong>IsTemplated</strong></td>
-        <td>Boolean</td>
-        <td></td>
-        <td>false</td>
-        <td>This is more of a framework-property and is used by the master layout system to mark elements as being <em>sealed</em> when they're part of a master layout. The layout editor prevents users from changing sealed elements.</td>
-    </tr>
-    <tr>
-        <td><strong>Descriptor</strong></td>
-        <td>Orchard.Layouts.Framework.Elements.ElementDescriptor</td>
-        <td></td>
-        <td></td>
-        <td>The Descriptor contains metadata information about the element as well as delegates to element event handlers that need to be invoked when certain events occur for a given element. Element Descriptors are created by Element Harvesters, and it is in fact these descriptors that are presented as elements in the layout editor's toolbox.</td>
-    </tr>
-    <tr>
-        <td><strong>T</strong></td>
-        <td>Orchard.Localization.Localizer</td>
-        <td></td>
-        <td>An instance of the Localizer delegate.</td>
-        <td>The T property is the standard Orchard delegate that translates strings. A value is automatically provided for you as soon as an element is instantiated, so you can use it when overriding the localized properties such as DisplayText and Description.</td>
-    </tr>
-</tbody>
-</table>
-
-We won't go into *element descriptors* just yet, since we don't have to deal with them directly when creating custom elements. We will, however, look into them in detail when we look into *element harvesters*.
-
-### Element Drivers ###
+### Element Drivers
 While element classes handle the data side of things, it's the *element drivers* that handle the behavioral side of things. This works very similar to the way content parts, content part drivers, content fields and content field drivers work. Drivers handle things like displaying and editing the element.
 
 If you're familiar with writing custom parts and fields, you'll recognize many of the concepts when writing custom elements.              
@@ -245,7 +110,7 @@ The following table describes each of the above members:
 </tbody>
 </table>
 
-### Element Data Storage ###
+### Element Data Storage
 Element classes typically implement additional properties that are specific to them. In almost all cases, you'll want the information stored in those properties to be persisted when the element instance itself is being persisted. To persist information, all you need to do is store that information into the `Data` dictionary that each element inherits. The *element serializer* will serialize all contents of the Data dictionary.
 
 The following example demonstrates how you can use the `Data` as the *backing mechanism* for your properties:
@@ -312,23 +177,13 @@ public MyElementSettings MyProperty {
 
 It's kind of sad that there's no convenient method for the property setter at this moment of writing, but who knows when that will change.
 
-### Developing Custom Elements ###
-When developing custom elements, the following are typically the steps involved.
-
-1. Create a class that derives from `Element` or any of its child classes. The only required member that needs to be implemented is the abstract `Category` property. 
-2. Create a class that derives from `ElementDriver<T>`, where `T` is your element's class. This class does not require any members, but needs to be there in order for your element type to be discoverable due to the way the `TypedElementHarvester` works. We'll look into element harvesters later on.
-3. Although not strictly required, create a Razor view for your element for the `"Detail"` display type. If you don't provide a view, a default view will be used which simply displays the name of the element.
-4. Also not strictly required, create a design-time view for your element for the `"Design"` display type. If you don't provide a design-time view, the view for the `"Detail"` display type will be used. This view is used when your element is rendered by the layout editor.
-
-Learning how to write custom elements is best done by following an example, so let's try it out.
-
-#### Trying it out: Creating the Clock element ####
+### Trying it out: Creating a Map Element
 In this demo we'll create a very simple custom element called `Clock` that will display the current time. The goal of this demo is to introduce the basics of custom element development.
 We'll allow the user to provide a *custom date format string*, so we'll need to implement an element editor UI as well. 
 
 > For the demos in this third part, I created a custom module called `OffTheGrid.Demos.Layouts` that you can download from the book's website.
 
-##### Writing the Clock element and driver #####
+#### Writing the Clock element and driver
 First, create a directory in your module called *Elements* and add a class called `Clock` as follows:
 
 ```
@@ -360,16 +215,14 @@ Build the solution and launch the site. Create a new page called "Custom Element
 
 ![](./figures/fig-83-clock-element-design.png)
 
-##### Creating the element shape template #####
+#### Creating the element shape template
 The next step is to have the clock actually display the current time. To do so, we need to provide a view for our element. When an element is being rendered, a shape called `Element` is created, to which a number of alternates is added. One of these alternates is based on the type name of the element. The alternate we're interested in is as follows: `Elements.Clock`, so add a view called `Elements/Clock.cshtml` that looks like this:
 
 ```
 <p>@DateTime.Now.ToString("t")</p>
 ```
 
-And that's all it takes to write a basic element.
-
-##### Writing the Clock element editor #####
+#### Writing the Clock element editor
 Now, let's say that we wanted to enable the user to configure the date/time format string for the Clock element. To achieve that, we need to do three things:
 
 1. Add a property to the `Clock` element that stores the format string and change the return value for `HasEditor` from `false` to `true`, since we will want to present the user with an editor dialog when adding and editing Clock elements.
@@ -450,7 +303,7 @@ Finally, we need to actually take advantage of the `FormatString` property in ou
 <p>@DateTime.Now.ToString(formatString)</p>
 ```
 
-### An Alternative Element Editor Implementation using the Forms API ###
+### Forms API
 In the previous demo, we saw one way to implement an element editor by taking advantage of the `EditorTemplate` shape. Another kind of shape we could leverage is shapes created by the *Forms API*. The Forms API is provided by the `Orchard.Forms` module, and offers a way to create forms programmatically without having to create Razor views.
 
 To simplify the creation and binding of forms using the Forms API, the Layouts module comes with a base driver class called `FormsElementDriver`. All that your element driver has to do now is provide one or more *form names* that need to be rendered. This class also implements the `IFormProvider` interface so that your driver can provide a form programmatically right there and then.
@@ -509,7 +362,7 @@ There are a few important aspects to using the Forms API with element editors:
 
 With these changes in place, the editor experience looks exactly the same, but without the need for a Razor view for the editor template.
 
-### Providing Data to the Display View ###
+### Providing Display Data
 When writing custom elements, often times you will need to prepare stuff for the display view from the driver. The `Clock` example didn't have that requirement, but let's say that we wanted its display view to be cleaned up a bit. For exaple, the view currently contains some logic to set a default format string in case none was provided by the editor:
 
 ```
@@ -556,10 +409,10 @@ Or even simpler:
 <p>@DateTime.Now.ToString(Model.FormatString)</p>
 ```
 
-### Custom Descriptions and Toolbox Icons ###
+### Descriptions and Toolbox Icons
 When writing custom elements, it is a good practice to provide a description for your element. The description is displayed as a tooltip when hovering over the element in the toolbox. Providing a description is easily done by overriding the `Description` property. You can also specify a custom toolbox icon by overriding the `ToolboxIcon` property on your element class. The Layout Editor expects a valid Font Awesome icon identifier to be returned.
 
-#### Tying it out: Polishing the Clock Element #### 
+#### Tying it out: Polishing the Clock Element
 In this demo, we'll polish our Clock element by providing a proper description and a more repsentative Font Awesome icon. All we need to do is override the `Description` and `ToolboxIcon` properties as follows:
 
 ```
@@ -571,9 +424,16 @@ Which yields the following result:
 
 ![](./figures/fig-85-clock-description-and-icon.png)
 
-My friend, we are going places.
+Dear reader, we are going places.
 
-### Summary ###
+### Advanced Element Editors
+In the Clock element example, I showed you two ways to implement the element editor UI. In the next example, we'll see how we can implement element editors that use **multiple screens**.
+
+When implementing an element editor that consists of multiple screens, we need a way to persist the data across requests. The way this is done is by taking advantage of a service called `IObjectStore`, which is a general-purpose store of key/object pairs. The default implementation relies on session state. This service is also used by the layout editor to store the element being edited, which is then loaded form the element editor dialog controller. That knowledge is key to implementing more advanced element editors that go beyond a single page.
+
+In chapter 18 I will walk you through the process of implementing a **SlideShow** element, which will demonstrate this technique.
+
+### Summary
 In this chapter, we have seen how we can extend the list of available elements by implementing our own element classes. We learned about the `Element` class itself as well as the `ElementDriver<T>` class. We then continued and created a custom element called the `Clock`, demonstrating what it takes to provide custom rendering as well as an element editor. We also learned about implementing element editors using the *Forms API* provided by the `Orchard.Forms` module, which is great for basic element editors where there is no need for more advanced editor UIs.
 
 With this knowledge in our pocket, we have all we need to be able to write any kind of elements, whether they be simple or more complex. It always boils down to implementing an element class and driver, and implementing the various methods on the driver.

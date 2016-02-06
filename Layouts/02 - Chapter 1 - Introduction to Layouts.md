@@ -1,29 +1,29 @@
-## Layouts ##
-### What are Layouts###
+## Introduction to Layouts ##
+
 Layouts are everywhere. You find them in newspapers and magazines, in the office and your living room. Cities, planets and the universe all have layout. It is the layout of things. You could say that elements, objects and shapes that are placed in a particular position relative to each other, are said to be part of a layout.
 
-In other words, **a layout is the arrangement of elements in a given plane**.
+In other words, **a layout is an arrangement of elements**.
 
-In the world of websites, **a layout is the arrangement of visual elements on a two-dimensional surface**. Visual elements include things such the site navigation, side bar, main content and footer and blocks of contents.
+In the world of websites, **a layout is the arrangement of visual elements on a page**. Visual elements include things such the site navigation, side bar, main content and footer and blocks of contents.
 
-#### Orchard and Layouts ####
+### Orchard and Layouts ###
 In the world of the **Orchard.Layouts** module, a layout is **an hierarchical collection of elements placed on a canvas**.
 
 This chapter we'll get to see what the Layouts module brings to the table and why (and when) we should use it.
 
 Before we dig in, let's talk about the term "layout" for a bit, as this term is kind of overloaded in the context of Orchard. This will help get us a better understanding of what the Layouts module is, and what it is not.
 
-##### Layout and Layout.cshtml #####
+#### Layout and Layout.cshtml ####
 If you ever developed an Orchard theme, you'll be very familiar with the Razor view called **Layout.cshtml**. It basically contains all of the HTML of the site's overall design and layout. It is the shape template for the **root Layout shape** and renders the main layout of the site, also rendering **zones**.
 
 This Layout shape is unrelated to the Layouts module.
 
-##### LayoutPart and Layout Content Item #####
+#### LayoutPart and Layout Content Item ####
 When you enable the `Layouts` feature of the `Orchard.Layouts` module, a new content part called `LayoutPart` is added to the system and attached to the `Page` content type by default. The `LayoutPart` enables content editors to visually arrange elements on a canvas. Elements are a new type of entity in Orchard and represent the things you can place on a canvas.
 
 In addition to attaching the `LayoutPart` to the `Page`, the `Layouts` feature adds another content type called `Layout` which also has the `LayoutPart` attached. The key difference between a `Page` and a `Layout` content item is that `Layout` content items are intended to serve as **layout templates** that you can apply to other content items with the `LayoutPart` (such as `Page`). We'll get into layout templates in more detail later on.
 
-### Why use Orchard.Layouts? ###
+### When to use Orchard.Layouts ###
 So when would you want to use the Layouts module, and why was it created in the first place?
 
 The easiest way to understand why the Layouts module is useful is by looking at a simple example. Consider the following web page:
@@ -89,7 +89,7 @@ Disadvantages of this approach:
 
 But that was before we had Layouts.
 
-### Meet Orchard.Layouts ###
+#### Orchard.Layouts ####
 All of the above workarounds and their disadvantages went away with the advent of `Orchard.Layouts`. Creating a two-column layout now could not be simpler. Simply add a `Grid` element with a single row and two columns to the canvas, add any number of content elements, and done. No need for HTML editing, no additional zones necessary, no widgets and layers, and no additional content types necessary.
 
 ![Figure 6 - Say hello to the new kid on the block - the LayoutsPart and its layout editor](./figures/fig-1-6-layout-editor.png)
@@ -119,7 +119,7 @@ With the release of the Layouts module, interesting questions were raised. Some 
 Let's go over them one by one.
 
 #### Where did the BodyPart go? Is it still relevant? ####
-Oh yeah, the `BodyPart` is absolutely still relevant and did not go anywhere. The `LayoutPart` is not a replacement for `BodyPart`. If all you need is an editable body of text, then `BodyPart` is your guy.
+The `BodyPart` is absolutely still relevant and did not go anywhere. The `LayoutPart` is not a replacement for `BodyPart`. If all you need is an editable body of text, then `BodyPart` is your guy.
 New Orchard installs will use `LayoutPart` by default for the `Page` content type primarily to show the new feature. If you don't need the layout capabilities, then it's arguably more user friendly to just use the `BodyPart`, as it allows the user to start entering and editing content directly.
 
 #### What happens to my existing site when upgrading to Orchard 1.9? ####
@@ -174,13 +174,11 @@ Grids are great for designing layouts. They lead to consistency and bring order 
 
 The `Orchard.Layouts` layout editor enables users to create such grids easily, as we'll see in the next chapter.
 
-### Responsive Layouts ###
+#### Responsive Layouts ####
 One big advantage of working with CSS grid frameworks for the web is that these frameworks help with implementing *responsive layouts*. A responsive layout is one that adapts itself automatically based on the viewport's width of the browser. As the viewport width decreases in size, the cells in a grid decrease in size as well up to a specified minimum, after which the cell will break onto the next line. Figure 2 shows an example of a layout on a desktop device as well as on a mobile device.
 
 ![](http://i.imgur.com/zyQRuFQ.png)
 *Figure 9 - A responsive grid works well on various widths*
-
-
 
 ### Summary ###
 In this chapter, we introduced the new Layouts module and what it is.   

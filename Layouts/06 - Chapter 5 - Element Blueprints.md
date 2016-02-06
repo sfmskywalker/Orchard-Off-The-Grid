@@ -1,11 +1,10 @@
-## Element Blueprints ##
-Element Blueprints are pre-configured elements defined by the user that become available as elements in the toolbox.
-The user defines the display name, the technical name, the base element type to preconfigure, and optionally a category for their new element.
+## Element Blueprints
+In this chapter we'll take a look at *Element Blueprints*, which is a feature that enables the user to create pre-configured elements. These elements can then be used by the layout editor for example.
 
-### When to use Element Blueprints ###
+### When to use Element Blueprints
 Whenever you find that you are duplicating elements in various layouts, those elements are a candidate to be turned into an element blueprint. Examples are company logos, contact information and slogans that appear in multiple places on the site.
 
-### How to create Element Blueprints ###
+### Creating Element Blueprints
 Creating element blueprints is easy. To create one, you click on the *Elements* admin menu item underneath the *Layouts* admin menu item. This will take you to the index screen of all of your element blueprints, which is empty by default. On this screen, click the *Create* button to the top right of the window. The screen that appears next presents you with all of the available elements to use for your pre-configured element. Once you picked one, the next screen will ask for the following information:
 
 - Element Display Name
@@ -21,20 +20,20 @@ The **Element Description** is an optional field that gives you the opportunity 
 
 The **Element Category** also is an optional field, and lets you control in what category of the toolbox this element appears. If no category is specified, *Blueprints* is assumed as its category.
 
-The following step-by-step guide demonstrates the creation of a sample element blueprint called *Contact Details*.
+#### Trying it out: Creating an Element Blueprint
+In this little walkthrough, I will show you step-by-step how to create a sample blueprint element called **Contact Details**. The purpose of this element is for the user to be able to manage their contact details from a single place, while being able to place this element on various pages. Whenever the user changes their contact details, the changes are reflected everywhere.
 
-#### Demo: Creating the Contact Details Element Blueprint ####
-##### Step 1 #####
+##### Step 1
 Click on the *Elements* admin menu item.
 
 ![](http://i.imgur.com/kyrW6F0.png)
 
-##### Step 2 #####
+##### Step 2
 Click on the *Create* button on the top right side of the window and select the *Html* element as the base element for our element blueprint.
 
 ![](http://i.imgur.com/sJyyTxM.png)
 
-##### Step 3 #####
+##### Step 3
 Provide the following values for the following fields:
 
 - Element Display Name -> *Contact Details*
@@ -44,7 +43,7 @@ Provide the following values for the following fields:
 
 And press *Create* to continue to the next screen, where the Html element editor will appear.
 
-#### Step 4 #### 
+##### Step 4
 Provide any content you like for this step. I entered the following HTML code:
 
     <p>John van Dyke</p>
@@ -59,7 +58,7 @@ Our demo blueprint element has now been created. The next step is to use this el
 
 *Figure 57 - Our demo blueprint element.*
 
-#### Step 5 ####
+##### Step 5
 Go to the Content screen and edit an existing page or create a new one. Once the editor is loaded, you'll see that there's a new category called *Demo* available with our newly created *Contact Details* element.
 
 ![Figure 58 - Our demo blueprint element available from the toolbox.](http://i.imgur.com/TdpVI34.png)

@@ -1,8 +1,8 @@
-## Layouts First Look ##
+## First Look
 In this chapter, we'll take a tour through the Layouts module and see how it works from a user's perspective.
 We will assume you have a clean Orchard 1.9.1 or later installation running.
 
-### The Layouts Feature###
+### The Layouts Feature
 When you setup a new Orchard 1.9.1 or later installation, the Layouts feature will be enabled by default.
 
 ![](http://i.imgur.com/HnyIuz5.png) 
@@ -304,7 +304,7 @@ Columns can be resized by dragging their left and right edges. When you resize a
 
 > [Daniel Stolt](https://github.com/DanielStolt), the contributor who wrote the layout editor, is working on an exciting new open source project called [Ayos](https://github.com/IDeliverable/ayos "Ayos"). In a nutshell, Ayos is a standalone layout editor and will be more powerful, rich and flexible than the layout editor that currently ships with Orchard at the time of this writing.
 
-### Rendering Layouts ###
+### Layout Frontend ###
 Enabling the user to create and manage layouts from the back-end is only half of the story of course. The second half is getting that layout out on the screen on the front-end.
 
 Figure 18 demonstrates what the layout will look like on the front end.

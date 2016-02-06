@@ -1,7 +1,8 @@
-## 11. Snippets ##
+## 11. Snippets
 In chapter 3 we learned about *Snippet Elements*. They are elements dynamically discovered based on Razor views whose name follow a certain convention: Razor views that end with **Snippet.cshtml** are harvested as a Snippet element. For example, **ButtonSnippet.cshtml** would yield an element called **Button Snippet**.
 
-As of Orchard 1.10 this feature was enhanced by yours truly to *provide parameterizable snippets*. A parameterized snippet enables users to add snippet elements to the layout editor and *configure these snippets with custom settings*.
+### Parameterized Snippets
+As of Orchard 1.10, this feature was enhanced to provide *parameterizable snippets*. A parameterized snippet enables users to add snippet elements to the layout editor and *configure these snippets with custom settings*.
 
 To add settings to a snippet, all the theme developer needs to do is invoke an Html helper called `SnippetField`. This nifty helper serves two purposes:
 
@@ -19,9 +20,9 @@ The method returns a thing called `SnippetFieldDescriptorBuilder` which enables 
 
 Parameterized snippets are a great tool for theme developers to create custom elements without the need to write element classes. All they need to do is create a Razor view and provide the necessary markup.
 
-To get a good understanding of what you can do with parameterized snippets, let's create one.
+To get a good understanding of what you can do with parameterized snippets, let's see how to create one.
 
-#### Demo: Parameterized Snippets ####
+#### Trying it out: Parameterized Snippets ####
 In this demo, we'll build a reusable, parameterized snippet called *JumbotronSnippet* with two fields: Caption and Text. The idea is that users can add any number of jumbotrons to their pages and provide a caption and a body text.
 
 The first thing to do is create a view called "JumbotronSnippet.cshtml" in our theme and provide the following markup:
@@ -44,7 +45,7 @@ The first thing to do is create a view called "JumbotronSnippet.cshtml" in our t
 </div>
 ```
 
-Notice that I'm chaining the `DisplayedAs` and `WithDescription` methods. The fluent API prevents us from having to first instantiate a snippet field, initializing it with desired values, and then render it. 
+Notice that I'm chaining the `DisplayedAs` and `WithDescription` methods. The fluent API enables us to do everything in a single line, rather than having to first instantiate a snippet field, initializing it with desired values, and then render it. 
 
 With this snippet in place, all we need to do next is make sure that the *Layout Snippets* feature is enabled and add the `Jumbotron` element to our canvas.
 
@@ -61,20 +62,10 @@ Let's see how this looks on the front end:
 
 ![](./figures/fig-82-jumbotron-front-end.png)
 
-### Creating Custom Editors ###
+### Creating Custom Editors
 
 
-### Summary ###
-In this chapter, we learned about shapes, which are dynamic objects that serve as view models for shape templates. Shape templates take care of generating HTML, and can be implemented either using Shape methods or Razor views. We also learned about shape alternates, which are key to understanding how to customize shape templates in your custom theme.
+### Summary
+In this chapter, we learned how snippets work and how we can parameterize them so that users can configure them from the layout editor. Snippets enable theme developers to create custom elements without having to write C# classes. All that's required is a Razor view and some markup.
 
-We then looked at a specific category of elements: Part and Field elements. They provide the user with great control over where to place them on a canvas, however, it's the theme's responsibility to prevent the default shapes from being rendered using **Placement.info**.
-
-Although the Layouts module comes with a default CSS grid stylesheet, many themes these days will come with their own CSS grid frameworks, such as the popular Bootstrap framework. We learned how to take advantage of such frameworks by overriding the Grid, Column and Parts.Layout shape templates.
-
-We learned a bit about the responsive aspects of Bootstrap and how to take advantage of that using the Layout editor to gain control over column sizes depending on various breakpoints.
-
-To learn more about Bootstrap and responsive grids, visit http://getbootstrap.com/css.
-
-Finally, we demonstrated how snippets work and how we can parameterize them so that users can configure them from the layout editor. Snippets enable theme developers to create custom elements without having to write C# classes. All that's required is a Razor view and some markup. 
-
-And that's actually it for part 2! In the first part we looked at the Layouts module from a user's perspective. In part two, we looked at the module from a theme developer's perspetive. In the third and final part, we'll do a deep dive and check this module out from a module developer's perspective and learn about all the extensibility points that the Layouts module has to offer. Fasten your seatbelt!   
+And that's actually it for part 2! In the first part we looked at the Layouts module from a user's perspective. In part two, we looked at the module from a theme developer's perspective. In the third and final part, we'll do a deep dive and check this module out from a module developer's perspective and learn about all the extensibility points that the Layouts module has to offer. Fasten your seatbelt!   

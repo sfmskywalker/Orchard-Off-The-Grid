@@ -1,4 +1,4 @@
-## Layout & Element API ##
+## Layout and Element APIs
 So far we've seen how to write custom elements by creating custom element classes and harvesters. In this chapter, we will learn about APIs at our disposal to programmatically work with elements. More specifically, we will learn how to:
 
 - Work with the element manager to query all available element categories and descriptors;
@@ -12,13 +12,13 @@ Knowing about these APIs will enable you to take advantage of all that the Layou
 
 We'll get started with an overview of the most interesting APIs first, and then onward with some examples to see how they work. 
 
-### Managing Layouts and Elements ###
+### Managing Layouts and Elements
 The Layouts module comes with two services that you can use to programmatically manage layouts and elements:
 
 - **ILayoutManager**
 - **IElementManager**
 
-#### ILayoutManager ####
+### ILayoutManager
 The Layout Manager itself uses the Element Manager to manage elements on a somewhat higher level. For example, it has a method that accepts a serialized string of elements which it can render into a complete tree of element shapes. It also provides methods to manage Layout content items and apply layout templates.
 
 The following code snippet lists all members of the `ILayoutManager` class:
@@ -113,7 +113,7 @@ The following table provides a description for each member of `ILayoutManager`:
 </tbody>
 </table>
 
-#### IElementManager ####
+### IElementManager
 The `IElementManager` service deals with a variety of things when it comes to elements. The following code listing lists all of its members:
 
 ```
@@ -215,7 +215,7 @@ The following table describes the various methods:
 </tbody>
 </table>
 
-### Element Events ###
+### Element Events
 Part of writing custom elements consists of implementing element drivers, which allow you to handle events specific to the element type of that driver. Alternatively, we can implement event handlers to handle events for any type of element. To do so, all you need to do is implement the `IElementEventHandler` interface, which looks like this:
 
 #### IElementEventHandler ####
@@ -242,7 +242,7 @@ The majority of these methods are invoked either by `ElementManager` or `Element
 
 Oftentimes, when implementing an event handler, you're typically only interested in one or some event methods. So instead of implementing this interface directly, it is recommended to implement the abstract class `ElementEventHandlerBase` instead. That way you just need to override the method you're interested in handling.
 
-### Displaying Elements ###
+### Displaying Elements
 The service that is responsible for creating shapes from elements is `IElementDisplay`, which is defined as:
 
 #### IElementDisplay ####
@@ -255,14 +255,14 @@ public interface IElementDisplay : IDependency {
 
 The `DisplayElement` method returns a shape of type `"Element"`, while the `DisplayElements` method returns a shape of type `"LayoutRoot"`, whose child shapes are all of type `"Element"`.
 
-### The Layout Editor ###
+### The Layout Editor
 The `ILayoutEditorFactory` service enables us to instantiate a fully initialized `LayoutEditor` object, which is used as a view model. We can use the Html helpers `Editor` and `EditorFor` on `LayoutEditor` objects to the entire layout editor.
 
 You typically use this layout editor factory class from your own controller, and supply the `LayoutEditor` object to your view, from where you render it using `Html.EditorFor`.
 
 An interesting aspect you may realize here is that a layout is *independent from the LayoutPart*. The LayoutPart is a user of the layout editor factory, but the layout editor itself s not dependent on the LayoutPart. The LayoutPart does however take care of reading the elements back from the editor and supplying element data. When you use the layout editor, it is up to you to handle persisting and restoring the element data. We'll see how this works in practice shortly.
 
-### Serialization API ###
+### Serialization
 The Layouts module comes with two services that handle serialization and deserialization of elements:
 
 - *IElementSerializer*
@@ -340,11 +340,10 @@ And the following table describes the members of `IElementSerializer`:
 </tbody>
 </table>
 
-### Demo: Working with the APIs ###
+### Trying it out: Working with the APIs
 In this demo, I'll demonstrate how to work with the various APIs covered in this chapter. We'll see how to manually construct a tree of elements, initialize them, serialize and deserialize them and finally render them. We'll then see how to work with the layout editor.
 
-
-#### Creating the Controller ####
+#### Creating the Controller
 For starters, create the following controller:
 
 ```
@@ -361,7 +360,7 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
 
 Make sure to create an empty Razor View as well.
 
-#### Creating Elements ####
+#### Creating Elements
 With that in place, let's create an element of type `Html` and initialize it with some HTML content:
 
 ```
@@ -427,7 +426,7 @@ var htmlDescriptor =
 var html = (Html)_elementManager.ActivateElement(htmlDescriptor);
 ```   
 
-### Rendering Elements ###
+#### Rendering Elements
 Now that we have seen how to programmatically instantiate elements, it would be nice if we knew how to render them. Obviously I could simply send the element to my view, and render it from there. For example, the following would totally work:
 
 ```
@@ -571,7 +570,7 @@ Now the front-end should look like this:
 
 Now let's see how we can serialize and deserialize elements.
 
-### Element Serialization ###
+#### Element Serialization
 The following code listing demonstrates the usage of `ILayoutSerializer` to serialize and deserialize an hierarchy of elements. To make it a little bit more interesting, we'll provide the resulting JSON string to a textarea and allow the user to make changes to it and submit it back. We'll then deserialize the submitted JSON and render the updated set of elements.
 
 The following code snippets shows element serialization in action:
@@ -734,7 +733,7 @@ Will render the following output:
 
 ![](./figures/fig-99-custom-json-result.png)
 
-### Working with the Layout Editor ###
+#### Working with the Layout Editor
 Although editing layouts of elements with raw JSON isn't ideal, it does demonstrate an interesting fact: you can potentially implement any sort of editor to enable users to work with elements.
 
 The Layouts module itself provides a fully-function layout editor that we can reuse, instead of using a simple textarea.
@@ -760,7 +759,7 @@ Therefore, whatever data we get back from the layout editor, it needs to be mapp
 
 It's not hard, just something to be aware of.
 
-#### Trying it out: Layout Editor Factory ####
+#### Layout Editor Factory ####
 Taking all of the above into account, the following code demonstrates how to work with the layout editor factory:
 
 ```
@@ -919,4 +918,9 @@ Notice that the RecycleBin data string actually results in a `RecycleBin` elemen
 
 In addition to handling the removal of elements, you would also have to invoke the `IElementManager.Saving` method, which will invoke the `Saving` event on all elements.
 
-> Although there are currently no elements that handle the `Saving` event, elements provided by third-party modules may of course rely on this event.
+> There are currently no elements that handle the `Saving` event, but it is there if you need it.
+
+### Summary
+In this chapter we learned about various services that are provided by the **Layouts** module, which itself relies on them to implement the layout editor and **LayoutPart** for example. Knowing how to use these services enable you to implement more advanced modules that rely on elements.
+
+In the next chapter, we will take everything we learned in this chapter and use it to build a rather advanced element called **SlideShow**. We'll see how we can have that element store each individual slide and how to implement slide editors using layout and element APIs.

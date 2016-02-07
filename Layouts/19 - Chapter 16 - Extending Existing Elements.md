@@ -1,4 +1,4 @@
-## Extending Elements ##
+## Extending Existing Elements
 In the previous chapters, we learned how to create new types of elements by creating new element classes and harvesters.
 
 In this chapter, instead of creating new element types, we will see how we can extend existing ones by creating additional *element drivers* and *element handlers*.
@@ -9,20 +9,20 @@ Extending elements with additional information does not work the same as with co
 
 The answer to that question is quite simple: elements have a *Data* dictionary, which is a public property defined on the `Element` base class.
 
-### Multiple Drivers ###
+### Using Multiple Drivers
 Being able to store additional information on an element is one thing. Another thing is providing additional UI on the element editor dialog screen, which we can do by implementing our own driver for a given element type.
 
 As is the case with content parts and content fields, elements too can have more than one driver. This is what enables us to provide additional UI. We could write drivers for a specific element type, or for a base class that is shared by multiple element types.
 
-### Multiple Handlers ###
+### Using Multiple Handlers
 In addition to writing additional drivers, we can also implement additional *element event handlers*. In fact, the element driver system is implemented by such an element handler. This means that we can extend very specific element types as well as any other element types based on whatever criteria we like.
 
-### Trying It Out: Extending Elements ###
+### Trying It Out: Extending Elements
 If you know how to write an element handler or element driver, you already know how to extend existing elements, as the process is the same. The primary difference is that we don't "own" the element, and that we can't implement strongly-typed properties on them that access their `Data` dictionary.
 
 To see how it all works, we'll implement a common driver for any element type and provide an editor UI for the a custom property called `"FadeIn"`. This will demonstrate how to add additional properties to existing elements. This property will be a simple boolean value, and when set to `true`, will append a certain CSS class that will cause the element to fade in on page load. 
 
-#### Creating The CommonElementDriver ####
+#### Creating The CommonElementDriver
 The driver's goal is to provide an additional editor for all elements, so we'll create a driver for the base `Element` class:
 
 ```
@@ -253,7 +253,7 @@ With that in place, we can now have any element we like fading in. Except for th
 
 Now, you may be thinking that this is a lot of effort where we could simply just specify the CSS class directly using the HTML Class setting on each element, and you would be right. However, this excercise demonstrates how we can create more intuitive settings for the user. It's much easier to tick a checkbox than remembering to set a CSS class called `"auto-fade-in"`, for example.
 
-### An Alternative Implementation Using An Element Handler ###
+### An Alternative Implementation
 We have just seen how to extend an element using an element driver. But what if you wanted to extend only elements that meet a different criteria than being of a certain type? For example, what if we only wanted to expose the `"FadeIn"` property for the following elements: *Html* and *Image*?
 
 Since an element driver targets a specific element type class, we can't use that.
@@ -350,7 +350,3 @@ Everything else remains the same: no need to change anything in our views.
 
 ### Summary ###
 In this chapter, we learned that we can extend existing elements with additional properties and behavior. We can do this at a very granular level or on a global level, or anything in between, by implementing element drivers and element handlers.
-
-Powerful stuff, I am telling you.
-
-Speaking of which, in the next chapter we'll get to know about various APIs exposed by the Layout editor, giving even more power over Layouts and Elements. 

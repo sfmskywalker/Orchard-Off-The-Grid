@@ -1,4 +1,4 @@
-## Element Harvesters ##
+## Element Harvesters
 In this chapter, we will talk about element harvesters, what they are and how we can write our own.
 Element Harvesters are providers of elements. They are the ones that make available the elements we can choose from the layout editor's toolbox for example. The reason they are called "harvesters" is because of how they provide elements: elements are harvested from a variety of sources.
 
@@ -8,14 +8,12 @@ This decoupling of Element types and Element Descriptors offers great flexibilit
 
 Element harvesters provide a low-level API to provide elements to the system, and we'll see how to implement our own shortly.
 
-### Element Descriptors ###
+### Element Descriptors
 An element descriptor, as it name implies, is an object that describes an element. It contains information such as the concrete .NET type to use when creating element instances, the technical name, description and display text. It also contains more advanced things, such as delegates to methods that are responsible for displaying element instances and element event handlers.
 
 As mentioned, element descriptors are provided by element harvesters. When you look at the Layout Editor Toolbox, the elements you see there represent the available element descriptors.
 
-TODO: Anatomy of the Element Descriptor class.
-
-### Element Harvesters Out of the Box ###
+### Element Harvesters Out of the Box
 The following table lists all of the element harvesters that ship with Orchard, along with a description of what source is used to yield element descriptors and which module provides the particular harvester:
 
 <table>
@@ -69,7 +67,7 @@ With all of the available element harvesters, you probably won't need to impleme
 
 Whatever the case may be, knowing how to write custom element harvesters may come in handy. In the next two sections, we'll see how to implement our own.
 
-#### The IElementHarvester Interface ####
+### IElementHarvester
 All element harvesters implement the `IElementHarvester` interface, which lives in the `Orchard.Layouts.Framework.Harvesters` namespace. The following code listing shows how this interface looks like:
 
 ```
@@ -96,12 +94,12 @@ There are also cases where element harvesters are invoked outside the context of
 
 With this information in our pockets, let's give it a try and write our own little demo harvester.
 
-#### Trying it out: Writing a Custom Element Harvester ####
+### Trying it out: Writing a Custom Element Harvester
 In this demo we will write a simple element harvester that teaches you how to dynamically provide elements to the system. We will create a new part called `UserProfilePart`. the harvester will select all fields from this part and present them as elements available from the toolbox. A content editor user can then create pages using these elements, which will show their values based on the currently logged in user.
 
 Let's see how that works.
 
-##### Step 1: UserProfilePart #####
+#### Step 1: UserProfilePart
 The first thing we need to do is define the `UserProfilePart` and add content fields to it. We don't need an actual C# class to represent this part, so all we need for that is the following migration class:
 
 ```
@@ -139,7 +137,7 @@ namespace OffTheGrid.Demos.Layouts.Migrations {
 }
 ```
 
-##### Step 2: Writing a Custom Element Harvester #####
+#### Step 2: Writing a Custom Element Harvester
 
 Next, create a new class that implements `IElementHarvester`:
 
@@ -295,7 +293,7 @@ All this code does is render the ContentField shape, if there is one set.
 
 And with that in place, let's see it in action!
 
-##### Step 3: Trying it out #####
+#### Step 3: Trying it out
 
 First, let's update our admin user's profile:
 
@@ -321,7 +319,7 @@ Nice. Notice that the user profile field elements now display the values from th
 
 What's also nice is that since the harvester is querying content fields, any additional fields that we add to the `UserProfilePart` will become automatically available as elements.
 
-#### Improvements ####
+#### Improvements
 When we use the profile field elements as-is, they render their content field using the default template for that field. Although we could use one of the existing alternates based on content field name or content type, let's add our own alternate based on our element's type name and the content field type and name in question. This way, we can customize the rendering of content fields just for the user profile field elements without affecting the default rendering of these fields when they are rendered by default.
 
 The alternates we will add will be based on the element type name (`"UserProfileField"`), the content field type name (e.g. `"TextField"`) and the content field name (e.g. `"FirstName"`). With these alternates in place we can then create common templates for `UserProfileField` elements in general, or provide more specific templates for elements rendering a specific content field type, and even customize individual content fields.
@@ -388,7 +386,12 @@ Now our profile page looks like this:
 
 ![](./figures/fig-93-user-profile-polished.png)
 
-Much better. Shapes, and shape alternates, they rock.
+Much better.
 
-Now we can visually layout the user profile page using the Layouts editor and our custom elements in any way we like.
+### Summary
+In this chapter, we learned about **element harvesters**, which are essentially providers of element types.
+
+Orchard comes with a few element harvesters of its own, the most important one being the `TypedElementHarvester`, which populates the toolbox with elements based on the mere existence of classes that derive from `Element`.
+
+We then saw how to implement a custom element harvester, unlocking a powerful extensibility point in **Orchard.Layouts**.
 

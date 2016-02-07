@@ -1,11 +1,11 @@
-## Container Elements ##
+## Container Elements
 In the previous chapter, we learned how to write custom elements by deriving fro, the `Element` base class, or a derivative thereof. Writing custom elements that can contain other elements are similar, but require you to inherit from the `Container` class instead, which in turn inherits from `Element`.
 
 However, there is much more involved when writing custom container elements due to the way the layout editor works with container elements.
 
 In this chapter, we will unravel all the steps that are involved when creating custom container elements.
 
-### Writing Custom Container Elements ###
+### Writing Custom Container Elements
 Writing custom container elements boils down to the following steps:
 
 1. Implement a class that derives from `Container`.
@@ -17,7 +17,7 @@ Writing custom container elements boils down to the following steps:
 
 We will go through each of these steps in a moment, but first I would like to quickly describe the various components involved. 
 
-### The Container Class ###
+### The Container Class
 Container elements are classes derived from the `Container` abstract base class, which lives in the `Orchard.Layouts.Elements` namespace.
 
 The `Container` class adds single member called `Elements`, which is a list of elements:
@@ -28,10 +28,10 @@ public abstract class Container : Element {
 }
 ```
 
-### Element Drivers ###
+### Element Drivers
 When writing custom element classes, you need to implement a driver for that element, even if it contains no actual implementation. This is the same when writing container elements.
 
-### Layout Editor Integration ###
+### Layout Editor Integration
 Most of the work when creating a custom container goes into making it work with the layout editor. The primary reason for this is the fact that the layout editor has a client side model of elements, and it needs to know what the type of object is to be used on the client.
 
 The layout editor roughly divides elements into two categories:
@@ -41,7 +41,7 @@ The layout editor roughly divides elements into two categories:
 
 The distinction is made as follows: if a given element type declares its own **Model Map**, it means it has a specific client side (JavaScript) representation of that element. If not, the client side representation is always the **Content** class.
 
-### Layout Model Mapper ###
+### Layout Model Mapper
 Layout model mapping is a conversion process that basically converts a list of `Element` objects into a JSON format that the layout editor can work with, and the other way around: to convert a layout editor data JSON string back into a list of `Element` objects.
 
 The reason we need to do that is because the layout editor requires its own JSON schema to work with elements, so we need a mechanism to serialize elements into that JSON format. That mechanism is called *layout model mapping*.
@@ -134,7 +134,7 @@ The following table provides a description for each member:
 > 
 > The second way is to edit element properties *directly* from the layout editor. Since the layout editor works with its own JSON schema, we need a way to convert this data back to the standard JSON schema. This is where the layout model mappers come into play. 
 
-### Client Side Support ###
+### Client Side Support
 If you thought model mappers were kind of icky, wait until you see what needs to be done for the client side representation of custom container elements. That process might feel somewhat arcane to say the least, but since you're reading this book it will turn out just fine.
 
 Implementing the client side story of container elements essentially requires the following four steps:
@@ -148,7 +148,7 @@ Once you got all that in place, you'll be able to drag & drop your custom contai
 
 Now that we've seen the overview of the process, let's dive in and see what it looks like when actually implementing a container element.
 
-### Walkthrough: Writing A Custom Container ###
+### Trying it out: Writing A Custom Container
 In this walkthrough, we'll implement a custom container element that enables the user to specify a background image. Once you understand how to implement container elements, you'll be able to create any other type of elements with any number of properties, since the principles will be the same.
 
 We'll call our element the *Tile* element, which has the following characteristics:
@@ -167,7 +167,7 @@ We'll also need to add a project reference to the *Orchard.MediaLibrary* project
 
 Let's see how it all works.
 
-#### The Tile Element ####
+#### The Tile Element
 First of all, we need to create an element class called `Tile`, which will override the `Category` and `ToolboxIcon` properties, and add two additional properties: the `BackgroundImageId`, which will store the image content item ID that the user selected, and the `BackgroundSize` property, which will control how the background image gets applied in terms of the `background-size` CSS attribute. The following code listing shows our complete `Tile` class:
 
 ```
@@ -194,7 +194,7 @@ namespace OffTheGrid.Demos.Layouts.Elements {
 
 Nothing too fancy going on here, so let's move on to the Tile driver.
 
-#### The Tile Driver ####
+#### The Tile Driver
 The Tile driver will be responsible for the following things:
 
 - Rendering the Tile element editor (which is displayed when adding / editing a Tile element instance);
@@ -296,7 +296,7 @@ namespace OffTheGrid.Demos.Layouts.Elements {
 ```
 Let's go over that driver method-by-method.
 
-##### OnBuildEditor #####
+##### OnBuildEditor
 The `OnBuildEditor` method takes care of both displaying the element editor as well as handling its post-back. The first 4 lines initialize a new view model used by the editor template:
 
 ```
@@ -400,7 +400,7 @@ The above code listing shows the usage of the `MediaLibraryPicker` shape as prov
 
 The second part of the editor shape template renders a simple text box for the `BackgroundSize` property.
 
-##### OnDisplaying #####
+##### OnDisplaying
 Back to the Tile driver.
 
 The `OnDisplaying` method is called whenever the element is about to be rendered, and gives us a chance to prepare some data or objects for easy consumption from the view. In our case, we need to load the selected background image, which we pass into the element shape. Since the `OnDisplaying` event is triggered for both the front-end and layout editor back-end, we get a chance to optimize the data for both display types.
@@ -449,7 +449,7 @@ If so, we add a `style` attribute to our tag with the background image URL and b
 
 We then render the tag, and any children the Tile element may have.
 
-##### OnExporting and OnImporting #####
+##### OnExporting and OnImporting
 The driver also contains implementations for the `OnExporting` and `OnImporting` methods, which are invoked when the content item with the `LayoutPart` is being exported or imported, respectively.
 
 The only reason we need to implement these methods here is because we are referencing a content item by its primary key value (ID), which may be of a different value when content is exported and then imported into another database. To handle that scenario, we need to export and import a predictable, non-volatile identity of the referenced image content item. Fortunately, Orchard has excellent support for that. The content manager exposes a method called `GetItemMetadata` which takes a content item as an argument and returns an object describing all sorts of useful information about that content item, including its **identity**. It is this identity that we want to export, so that we can reference the correct content item during import.
@@ -501,7 +501,7 @@ protected override void OnImporting(Tile element, ImportElementContext context) 
 
 The line of interest here is where we use `context.Session.GetItemFromSession` to get a reference of the content item we're interested in. The `context.Session` object is an `IContentImportSession` which maintains a dictionary of imported content items, keyed by content identity. Once we get our hands on the referenced content item, we use its primary key value (ID) to update the element's `BackgroundImageId`.
 
-##### First Look #####
+##### First Look
 So far the process of writing a container element hasn't been that different from creating a regular element. The key differences so far are the fact that we derived our `Tile` class from `Container` instead of `Element` and some additional code to deal with the `MediaLibraryPicker` shape and additional import/export code because of that.
 
 Let's see where that got us so far by launching the solution and adding a Tile element to the canvas:
@@ -518,10 +518,10 @@ Optionally specify a value for the *Background Size* setting. When left empty, t
 When you hit save, you should see the Tile element and its configured background image.
 ![](./figures/fig-104-adding-tile-element-4.png)
 
-#### Implementing Containment ####
+#### Implementing Containment
 Surely enough, the Tile element works. However, try as you may, the element does not accept child elements to be dropped on it. Apparently there is some additional work to be done.  
 
-#### The Tile Model Map ####
+#### The Tile Model Map
 Due to some specific requirements of the layout editor implementation, we need to register a custom JavaScript element class that is configured such that it accepts child elements. To tell the layout editor what element class that is and what data to provide it with, we need the Tile element to hook into the editor model mapping process. 
 
 Fortunately, this is easy. All we need to do is define a class that inherits from `LayoutModelMapBase<T>`, where `T` is our `Tile` type: 
@@ -591,7 +591,7 @@ As you can see, it handles the mapping of properties shared by all elements.
 
 Another important aspect is the implementation of the `LayoutElementType` property, which returns the short name of the `T` type. In the case for our `TileModelMap<Tile>` class, this property will return the string `"Tile"`. This is important because we will use that name in our client side code that represents the Tile in the layout editor.
 
-#### Client-Side Assets ####
+#### Client-Side Assets
 When implementing custom elements with a customized client-side representation, it is important to realize that the layout editor is implemented using Angular and that it relies heavily on model binding. At the moment of this writing, there is no generic container element class that we could reuse. 
 
 > Regular (non-container) elements do have a generic client-side representation, which i the `Content` element model. Future versions of Orchard may provide a generic `Container` representation to implement custom containers, but until then we'll have to implement our own. Which isn't necessarily a bad thing, since it provides us with a lot of customization opportunities as well.
@@ -599,7 +599,7 @@ When implementing custom elements with a customized client-side representation, 
 So we'll just have to write our own.
 When doing so, I chose to write JavaScript and Less files that take advantage of the Gulp pipeline support provided with Orchard, but this is not required.
 
-##### Gulp and Assets.json #####
+##### Gulp and Assets.json
 To see how the Gulp supports works, let's go ahead and create the following file & folder structure in the module:
 
 	Assets
@@ -659,7 +659,7 @@ Simply right-click on the *build* task and hit *Run*. When you do this for the f
 
 With that in place, we are ready to provide actual contents to each asset file. We'll start with *Assets/Elements/Tile/Model.js*.
 
-#### The Client-Side Tile Model ####
+#### The Client-Side Tile Model
 The following code shows the minimum amount of boilerplate code required to make the Tile element a container element:
 
 ```
@@ -809,7 +809,7 @@ LayoutEditor.registerFactory("Tile", function (value) {
 
 The first argument is again the client-side element type (`"Tile"`) which serves as a key into some internal dictionary. The second argument takes a function that is invoked by the factory when a new Tile element needs to be instantiated. This is where we "new up" our Tile class, passing in various bits and pieces of the specified `value` argument. This value is an object that contains all the values provided from the `TileModelMap` class.
 
-#### The Client-Side Tile Directive ####
+#### The Client-Side Tile Directive
 In addition to implementing a client-side model for the tile element, we also need to implement an Angular directive, so that Angular templates can render the elements using their specific templates.
 
 The Tile directive (Directive.js) requires the following code in order for it to function asa container:
@@ -859,7 +859,7 @@ public ContentResult Get(string id) {
 
 This means that we'll have to provide a proper Shape template named "LayoutEditor.Template.Tile.cshtml" for our directive.
 
-#### The Client-Side Tile Directive Template ####
+#### The Client-Side Tile Directive Template
 After implenting the element's directive, we need to provide the directive's template, which is implemented as a shape template. Given the implementation of the `TemplateController` as we've seen just now, we need to create the following Razor view in the Views folder of our module: *"LayoutEditor.Template.Tile.cshtml"*, which requires the following markup:
 
 ```
@@ -881,8 +881,7 @@ After implenting the element's directive, we need to provide the directive's tem
 
 All of the Angular bindings you see in this file are bindings against methods and fields of the `$scope`, which is configured by our directive code. This template takes care of the entire rendering of our element's representation in the layout editor. This also means that if we add additional information to our Tile model, we could bind that information with this template. This is how we can make our template more specific to the Tile element, which we'll see later.
 
-
-#### Registering The Tile Assets ####
+#### Registering The Tile Assets
 Although we created various Tile assets and configured Gulp to generate their output files, we haven't actually included those files anywhere yet, and the Layouts module isn't doing that for us automatically. So how do we take care of that?
 
 Your initial thoughts may be to simply include those files from the Tile shape templates. But those templates are rendered *after the layout editor has been rendered* and using AJAX calls. So even though the `Script.Include` and `Style.Include` calls would register our assets, it won't do us any good since the main page will already have been rendered, and the HTML being sent back is just the HTML output of a single element, not the entire HTML document. So if that doesn't work, what do we do?
@@ -928,7 +927,7 @@ What we're doing here is adding a handler for the `OnDisplaying` event of the `E
 
 We haven't defined those resources yet, but we'll get to that in a moment. You may be wondering why I didn;t use the `Include` method of the resource manager instead of the `Require` method, because then we wouldn't have to create a resource manifest provider that defines these resources. The sole reason is that we need to ensure the layout editor scripts are included before our own scripts, and the only way to ensure that is to have our resources depend on that resource. Since we can't declare that dependency directly (as far as I know, that is), we will have to rely on a resource manifest provider to do so.
 
-#### The Resource Manifest Provider ####
+#### The Resource Manifest Provider
 So here we are, at the final piece of the puzzle of implementing custom container elements. Let's go ahead and create the following class in a new folder called *ResourceManifests*:
 
 ```
@@ -947,9 +946,7 @@ namespace OffTheGrid.Demos.Layouts.Handlers {
 
 Nothing fancy here, but do notice the `"TileElement"`'s dependency on the `"Layouts.LayoutEditor"` resource, which is provided by the Layouts module.
 
-#### Second Look ####
-Man, that was a lot of code we had to add. I don't know about you, but I'm ready to check it out and see if it actually works!
-
+#### Second Look
 When you launch the site now, you should be able to drag & drop the Tile element like before, provide a background image and background size, and see the element appear on the canvas. Only this time , we no longer see the selected background being rendered:
 
 ![](./figures/fig-107-tile-element-refreshed.png)
@@ -972,7 +969,7 @@ And while we're at it, we may just as well add support for editing the backgroun
 
 Let's see how that works.
 
-#### Updating TileModelMap ####
+#### Updating TileModelMap
 The first thing we need to do is get the background image URL and background image size down to our client-side Tile model. To do so, update the `TileModelMap` class as follows:
 
 ```
@@ -1013,7 +1010,7 @@ namespace OffTheGrid.Demos.Layouts.Handlers {
 
 OK, that's a lot more code than before. What we're doing here is implementing the `FromElement` and `ToElement` methods to map the background image URL and background size properties. Remember, these values are sent to and received from the client-side representation of the Tile element.
 
-#### Updating Tile/Model.js ####
+#### Updating Tile/Model.js
 Since we want to model-bind the background image URL and background size properties with the Tile element directive, we'll need to stick those values into our Tile model. The updated file looks like this:
 
 ```
@@ -1229,7 +1226,7 @@ So essentially, the `templateStyles` and `containerTemplateStyles` fields allow 
 
 The reason we're setting both fields is because the first one is only rendered if our element does not contain any elements, and the second one is only rendered if there is at least one child element.
 
-#### Updating Tile/Directive.js ####
+#### Updating Tile/Directive.js
 Although not strictly necessary, we should update our Tile directive file as well. The reason being that when the user changes the background size property from the property window of the element, ideally we would want to see that change reflected instantly. Although that text field is bound against the `backgroundSize` field of the element, that is not enough to reflect the change, since setting the background image is done by the `applyBackground` function.
 
 So let's go ahead and add a *linker* to our directive:
@@ -1273,7 +1270,7 @@ angular
     ]);
 ```
 
-#### Updating LayoutEditor.Template.Tile.cshtml ####
+#### Updating LayoutEditor.Template.Tile.cshtml
 Finally, we'll also need to update the directive's template so that the property editor actually displays a text field for the background size property. The easiest way to do that is by providing a list of `LayoutEditorPropertiesItem` to the `LayoutEditor_Template_Properties` shape that's being used by the directive template. This enables us to simply declare additional property editors without having to duplicate existing ones and without having to provide markup.
 
 The updated template looks like this:
@@ -1306,10 +1303,8 @@ The updated template looks like this:
 
 Notice that we're initializing an array of type `LayoutEditorPropertiesItem[]` with a single item. This item is initialized with a user-friendly label and a model value of `"element.backgroundSize"`. This is a client-side expression that will be assigned to an Angular directive in the Razor view used by the `LayoutEditor_Template_Properties` shape, which you can find in the Views folder of the Layouts module.
 
-#### Third Look ####
-Man, that's a lot of code going on. Also, this process is kind of hard to discover yourself and takes a lot of trial and error. It's a good thing you're reading about it here though, because once you're able to build this kind of elements, you'll be able to build any kind of elements. And that should be worth something.
-
-So let's see where this got us so far by launching the site and navigating to a page editor with the Tile element on it:
+#### Third Look
+Let's see where this got us so far by launching the site and navigating to a page editor with the Tile element on it:
 
 ![](./figures/fig-110-tile-element-with-background.png)
 
@@ -1334,7 +1329,6 @@ Obviously I knew we would get here, which is why I had you include a Style.less 
 This basically gives all child elements a semi-transparent (70% opaque) white background. Make sure to execute the Build task from the Task Runner Explorer, and then refresh the page:
 
 ![](./figures/fig-111-tile-element-with-background-and-semi-transparent-child-elements.png)
-
 
 ### Summary ###
 That was quite a journey. In this chapter, we learned all of the intricacies of writing custom container elements, and I'll admit it: it is far from straightforward.

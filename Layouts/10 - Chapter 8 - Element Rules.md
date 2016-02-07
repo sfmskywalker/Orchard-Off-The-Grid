@@ -1,20 +1,17 @@
 ## Element Rules
-In this chapter, we'll learn about yet another feature that can be applied to elements when using in the context of the layout editor: *Element Rules*.
+**Element Rules** are very similar to **Widget Layer Rules**, or **Layer Rules** for short, and use in fact the exact same rule engine provided by **Orchard.Conditions**.
 
-Element Rules are very similar to Widget Layer Rules, or Layer Rules for short, and use in fact the exact same rule engine.
+> **Orchard.Conditions** is a new module as of 1.10, and replaces the now deprecated rules engine provided by the **Orchard.Widgets** module. 
 
-As you may know, Layer Rules are a way to display widgets linked to a layer using a rule to be rendered or not, depending on whether or not the rule evaluates to true.
+The **Orchard.Widgets** module uses layer rules to display widgets linked to a layer using a rule. If the rule evaluates to true, all widgets associated with the layer are rendered. If the rule evaluates to false, none of those widgets will be rendered.
 
-The Layouts module leverages this rule system so that users can apply rules on a per-element level, controlling their visibility based on the specified rule.
+The **Orchard.Layouts** module leverages the same rules engine. Users can apply rules on a per-element level, controlling their visibility based on the specified rule.
 
-This enables you to for example only display a certain element if a user is authenticated, or any other condition that the rules system supports.
-
-This also means that if a rule applied to a container element evaluates to false, that container element, including its children, will not be rendered.
-
-Element Rules can also be applied on Layout Templates for more advanced use cases.
+This enables you for example to only display a certain element if a user is authenticated.
+If a rule applied to a container element evaluates to false, that container element, including its children, will not be rendered.
 
 ### Available Functions
-To use rules, one must use functions that evaluate to a boolean value. The following is a list of functionas that are available out of the box:
+To use rules, one must use functions that evaluate to a boolean value. The following is a list of functions that are available out of the box:
 
 <table>
   <thead>

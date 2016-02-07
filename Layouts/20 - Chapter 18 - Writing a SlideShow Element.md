@@ -1,22 +1,15 @@
-## Walkthrough: Creating A Slide Show Element ##
-Having gotten this far, you will have definitely learned a lot about the various APIs provided by the Layouts module. The goal of this chapter is to use those APIs in a more advanced scenario, where I will show how one could create a **slide show element**.
+## Writing a SlideShow Element
+With everything you learned so far, you'll already be able to implement many types of elements.
+However, there is one scenario we haven't covered yet: element editors that span multiple pages. Let's say that your element can store a collection of things, and for each thing, you want the user to be able to edit its properties. One could certainly implement this using a single element editor screen using JavaScript techniques. But depending on the nature of this thing, the UI could become too complex.
 
-Each individual slide of the slide show element will be *a layout itself*. This enables the user to create any sort of layout, ranging from simple elements to more complex layouts using grid elements.
+So we have a choice. In this chapter, I will walk you through the implementation of a sample element called **SlideShow**.
 
-Probably the most interesting aspect of this exercise will be to see how to create more advanced, multi-screen editors for an element. For instance, in the case of the `SlideShow` element, we will need one screen to display the slides (in thumbnail form) and the slide show player specific configuration (interval, wrap, etc). However, the user needs a way to edit each individual slide using the layout editor. For that, we'll need a custom controller that handles create, edit and delete operations of a given slide.
+### Defining the Slide Show Element
+A slide show basically consists of acollection of slides. What these slides are, that is up to us to decide. In this example, I decided that each slide is a simple class that stores a **layout of elements**.
+This means that each individual slide of the slide show element will be **a layout itself**. This enables the user to create any sort of layout, ranging from simple elements to more complex layouts using grid elements.
 
-In order to implement something like that, we need to understand how element data is transferred from the layout editor to the element editor dialog in the first place, so that will be our first topic.
+When implementing the `SlideShow` element, we will need one screen to display the slides (in thumbnail form) and the slide show player specific configuration (interval, wrap, etc). However, the user needs a way to edit each individual slide using the layout editor. For that, we'll need a custom controller that handles create, edit and delete operations of a given slide.
 
-### Transferring Element Data ###
-When the user clicks the *Edit* icon on an element on the layout editor, here is what happens:
-
-1. The element data (which is stored as part of the client-side object model) is **POST**-ed to a new window (the Element Editor Dialog). More specifically, this data is posted to the `Edit` action on the `ElementController` in the Layouts module.
-2. The `Edit` action stores the posted data into a thing called the **object store**. The object store is basically a durable key/value store. The default implementation of `IObjectStore` relies on session state to store and retrieve entries. An important aspect of storing this data is the **key** being used. Whenever you store something in the object store, you need to provide a key, and then hold on to that key since it's the only way to get back your data.
-4. The `Edit` action returns a *redirect* result to an overloaded version of the `Edit` action, passing in the *key* being used to store the element data. This key (called **session**) is then used to get the element data, query its drivers and display its editors.
-
-The decision to store the element state in an intermediary object store is what enables us to create any number of screens we need to service our elements, since there is no direct way to retrieve the element status from the database (since elements may not have been persisted yet in the first place). Just as long as our custom controllers receive the key, we can get our data from the object store, make changes, and put it back into the store. Once we're done from our custom controller, we need to make sure to ultimately redirect back to the `ElementController`'s `Edit` action with the correct key.
-
-### The Slide Show Element ###
 The slide show element will have the following functionality:
 
 - Being an element, the user can drag & drop the element onto a canvas.
@@ -49,7 +42,18 @@ And on the front-end, each slide will be displayed one at a time by the Bootstra
 In the next sections we will walk through the process of creating this slide show element in detail.
 So without further ado, let's dive in.
 
-### The SlideShow Class ###
+In order to implement something like that, we need to understand how element data is transferred from the layout editor to the element editor dialog in the first place, so that will be our first topic.
+
+### Transferring Element Data
+When the user clicks the *Edit* icon on an element on the layout editor, here is what happens:
+
+1. The element data (which is stored as part of the client-side object model) is **POST**-ed to a new window (the Element Editor Dialog). More specifically, this data is posted to the `Edit` action on the `ElementController` in the Layouts module.
+2. The `Edit` action stores the posted data into a thing called the **object store**. The object store is basically a durable key/value store. The default implementation of `IObjectStore` relies on session state to store and retrieve entries. An important aspect of storing this data is the **key** being used. Whenever you store something in the object store, you need to provide a key, and then hold on to that key since it's the only way to get back your data.
+4. The `Edit` action returns a *redirect* result to an overloaded version of the `Edit` action, passing in the *key* being used to store the element data. This key (called **session**) is then used to get the element data, query its drivers and display its editors.
+
+The decision to store the element state in an intermediary object store is what enables us to create any number of screens we need to service our elements, since there is no direct way to retrieve the element status from the database (since elements may not have been persisted yet in the first place). Just as long as our custom controllers receive the key, we can get our data from the object store, make changes, and put it back into the store. Once we're done from our custom controller, we need to make sure to ultimately redirect back to the `ElementController`'s `Edit` action with the correct key.
+
+### The SlideShow Element Class
 Start by creating a new class called `SlideShow` as follows:
 
 ```
@@ -101,7 +105,7 @@ namespace OffTheGrid.Demos.Layouts.Elements {
 
 Nothing we haven't seen before; just an element class with a bunch of properties. We'll allow the user to change these properties from the element editor dialog, and use the configured values when rendering the HTML such that it works with Bootstrap Carousel.
 
-### The SlideShowDriver ###
+### The SlideShowDriver Class
 Next, we need a driver that will handle displaying the element editor, storing the posted values back into the element, and rendering each slide object into an actual slide shape using the layout APIs.
 
 As mentioned, each slide is a "layout". What I mean by that is that each slide simply stores a collection of elements, representing an hierarchy of elements, "layout" for short.
@@ -316,7 +320,7 @@ The `OnBuildEditor` method builds to `EditorTemplate` shapes: one to handle the 
 
 The `OnDisplaying` method is very simple. All it does is get the list of `Slide` objects and then render them. We'll look at the `Elements/SlideShow.cshtml` template shortly to see how we're rendering these slide shapes in combination with Bootstrap related attributes.
 
-### The SlideShow Editor Views ###
+### The SlideShow Editor Views
 Since our driver returns two editor template shapes, we'll have to provide two views:
 
 - EditorTemplates/Elements/SlideShow.Slides.cshtml
@@ -670,7 +674,7 @@ I essentially copied the markup from the http://getbootstrap.com website and rep
 
 At this point, only one major thing is missing to make it all work: actually being able to create and edit individual slides.
 
-### The SlideAdminController ###
+### The SlideAdminController Class
 In order to enable the user to create, edit and delete individual slides, we will need a controller to handle those actions. When creating and editing a slide, we will have the controller reuse the layout editor.
 
 Create a new controller called **SlideAdminController** with the following skeleton code:
@@ -709,7 +713,7 @@ namespace OffTheGrid.Demos.Layouts.Controllers {
 
 I added action methods for *Create*, *Edit* and *Delete*, including the "post-back" variants.
 
-#### The Create Action #### 
+#### The Create Action
 The first action we'll implement is the `Create` action, which will render the layout editor and handle post-back. Notice that we're expecting the `session` key value to be provided by the slide show element editor.
 
 ```
@@ -827,7 +831,7 @@ Notice that this method relies on a few new services that we haven't declared ye
 
 Make sure to inject these services and store them in private fields. Except for the `T` property of course, that one is property-injected by Orchard rather than constructor-injected.
 
-#### The Edit Action ####
+#### The Edit Action
 The **Edit** action is very similiar to the **Create** action, the primary differences being:
 
 1. The view model needs to be initialized with existing layout data.
@@ -928,7 +932,7 @@ public ActionResult Edit(SlideEditorViewModel viewModel) {
 }
 ```
 
-#### The Delete Action ####
+#### The Delete Action
 The **Delete** action is responsible for removing a slide at the specified index. In terms of implementation, it is similar to the Create and Edit methods, except for the fact that don;t need to deal with the view model. All we need to do is materialize the slide show element, remove a slide from its list, then serialize and store it back into the object store. The implementation looks like this:
 
 ```
@@ -961,7 +965,7 @@ public ActionResult Delete(string session, int index) {
 
 And that's really all there is to it! With this code, you can now drag & drop slide show elements onto the canvas and manage individual slides.
 
-### Suggestions for Improvements ###
+### Suggestions for Improvements
 Although being able to craft individual slides using the layout editor is powerful, it is also potentially cumbersome in cases where all you really need is a list of simple images. In that case, it would be much nicer if the user had an option to simply select one or more images from the media library, and automatically generate a list of slides, where each slide would still be based on a layout, but with one single `Image` element. This has the benefit of quickly creating slide shows while retaining the ability to edit individual ones.
 
 Another improvement could be the decoupling of the slide show player. Although the theme could use completely different carousel scripts rather than Bootstrap Carousel, tight now the slide show element only supports Bootstrap Carousel-specific settings. You could consider makeing this set of settings more universal, which has the upside of potentially supporting any carousel script out there, but also has the clear disadvantage that some settings may not be applicable to certain players, while certain advanced players provide settings that the user cannot configure. So a good way might be to introduce some notion of *Players*, where the module declares a *ISlideShowPlayer* class for example, which provides its own editing and display UI. Then from the slide show element editor, the user would be able to first choose the slide show player they want to use and configure that one. Even better would be the notion of *Player Profiles*, where the user would not select a player, but a profile, which is basically a pre-configured player.

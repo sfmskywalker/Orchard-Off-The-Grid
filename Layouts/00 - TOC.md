@@ -35,13 +35,14 @@
 		* Elements First
 		* Using Elements as Widgets
 		* Existing Widgets based on Elements
-	* **Chapter 7 -  The Element.Display Token**
-	* **Chapter 8 -  Element Rules**
+	* **Chapter 7 - Element Tokens**
+		* The Element.Display Token
+	* **Chapter 8 - Element Rules**
 		* Available Functions
 		* Applying Element Rules
 * **Part 2**
-	* **Chapter 9 -  Theming**
-    	* Shapes Primer
+	* **Chapter 9 - Theming**
+    	* A Shapes Primer
     	* Anatomy of a Shape
        	* Shape Templates
     	* Elements and Shapes
@@ -65,10 +66,39 @@
 	    * Descriptions and Toolbox Icons
 	    * Advanced Element Editors
     * **Chapter 14 -  Container Elements**
-	    * 
+	    * Writing Custom Container Elements
+	    * The Container Class
+	    * Element Drivers
+	    * Layout Editor Integration
+	    * Layout Model Mapper
+	    * Client Side Support
+	    * Trying it out: Writing A Custom Container
     * **Chapter 15 -  Element Harvesters**
-    * **Chapter 16 -  Extending Elements**
-	* **Chapter 17 -  Layout APIs**
-    * **Chapter 18 -  Advanced Elements**
+	    * Element Descriptors
+	    * Element Harvesters Out of the Box
+	    * IElementHarvester
+	    * Trying it out: Writing a Custom Element Harvester
+    * **Chapter 16 -  Extending Existing Elements**
+	    * Using Multiple Drivers
+	    * Using Multiple Handlers
+	    * Trying It Out: Extending Elements
+	    * An Alternative Implementation
+	* **Chapter 17 - Layout and Element APIs**
+		* Managing Layouts and Elements
+		* ILayoutManager
+		* IElementManager
+		* Element Events
+		* Displaying Elements
+		* The Layout Editor
+		* Serialization
+		* Trying it out: Working with the APIs
+    * **Chapter 18 - Writing a SlideShow Element**
+	    * Defining the Slide Show Element
+	    * Transferring Element Data
+	    * The SlideShow Element Class
+	    * The SlideShowDriver Class
+	    * The SlideShow Editor Views
+	    * The SlideAdminController Class
+	    * Suggestions for Improvements
 * **Epilogue**
 * **Index**

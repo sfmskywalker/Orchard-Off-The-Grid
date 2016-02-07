@@ -1,7 +1,7 @@
 ## 9. Theming
 Orchard has a powerful theming story that allows theme developers endless freedom to skin pretty much everything. To understand how theming works, it is crucial to understand an Orchard-specific concept called *Shapes*.
 
-### Shapes Primer
+### A Shapes Primer
 Shapes are at the heart of the Orchard rendering engine. A shape is a dynamic object that can be rendered into HTML. Shapes act as the view model for a given **shape template**, which is typically yet not necessarily a Razor view. By default, shape templates can be implemented as:
 
 - Razor views

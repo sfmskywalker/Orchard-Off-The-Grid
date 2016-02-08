@@ -47,7 +47,7 @@ The following is the complete list of available elements when all features (exce
     * *Any content field attached to the content type will be made available as an element*
 * Snippets
     * **Shape**
-    * *(Any Razor file ending in `Snippet.cshtml` in the current theme will be made available as an element)*
+    * *Any Razor file ending in `Snippet.cshtml` in the current theme or any module will be made available as an element*
 * UI (New as of Orchard 1.10)
     * **Breadcrumbs** *(requires the `UI Elements` feature to be enabled)*
     * **Menu** *(requires the `UI Elements` feature to be enabled)*
@@ -362,7 +362,7 @@ Users can now place the Author text field anywhere they want and hide the defaul
 > You'll notice that when you initially place the Author field element onto the design surface, it will not have a value. That's because the Author text field does not initially have a value. After providing a value (e.g. "John") and then saving the page, you'll see that change reflected as part of the Author field element's value.
 
 #### Snippets
-The **Snippets** category holds two types of elements by default: One is a generic *Shape* element, and the others are based on the existence of *specifically named Razor view files*. We'll see how that works in a moment. First, let's meet the Shape element and see how it works.
+The **Snippets** category holds two types of elements by default: One is a generic *Shape* element, and the others are based on the existence of *specifically named Razor view files*. We'll see how that works in a moment, but first let's checkout the Shape element and see how it works.
 
 ##### Shape
 The **Shape** element is a very simple element that has just one content property: *Shape Type*. If you provide the shape type of an existing shape here, then that shape will be rendered wherever you place the Shape element. As simple as that.
@@ -392,21 +392,17 @@ Now publish the page and switch to the front-end. You'll now see the `BadgeOfHon
 Besides using shapes provided by the current theme, you could just as well use shapes provided by other modules (unless those modules inject required information into that shape during creation). You could even enable the **Templates** feature, create a template, and use that as the shape type for the Shape element. This unlocks some truly interesting scenarios, since the Templates module uses Razor syntax. Being able to create snippets of Razor from the back-end and then insert them into your layouts is powerful stuff.
 
 ##### Snippet Elements
-The second type of elements part of the Snippets category are called *snippets*. Snippets are very similar to the Shape element, but the key difference being that instead of you providing the shape type name, the Snippet element harvester provides elements based on the existence of Razor files in the current theme whose file names end in `Snippet.cshtml`.
+The second type of elements part of the Snippets category are called *snippets*. Snippets are very similar to the Shape element, but the key difference is that instead of you providing the shape type name, the Snippet element harvester provides elements based on the existence of Razor files in the current theme whose file names end in `Snippet.cshtml`.
 
-> Before you can use Snippets, you need to enable the *Layout Snippets* feature. 
+> Snippets are provided by the *Layout Snippets* feature, so be sure to enable that one. 
 
-For example, a Razor file called `LogoSnippet.cshtml` in the current theme would yield an element called `Logo`, which you could then drag & drop anywhere on your design surface. Let's try it out.
-
-First, create a new Razor file named `LogoSnippet.cshtml` in the Views folder of the current theme with the following content:
-
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Orchard_logo_1.svg/250px-Orchard_logo_1.svg.png" alt="Orchard Logo"/>
-
-Go to the Page content item edit screen and notice that there's a new element in town called `Logo` (figure 49).
+For example, a Razor file called `LogoSnippet.cshtml` in the **Views** folder of current theme (or any module) would yield an element called `Logo`, which the user can drag & drop anywhere on the canvas:
 
 ![Figure 49 - A new element called Logo is now available.](http://i.imgur.com/om1z2Cf.png)
 
 *Figure 49 - A new element called Logo is now available.*
+
+Snippets are great for themer and module developers alike, as thye provide a quick way of providing elements without having to write much code. What's more, Snippets can be **parameterized**, which means that you, as a developer, can render **named fields** that will be replaced with **user provided values**. You can learn more about this in **Chapter 11 - Snippets**.
 
 #### UI
 > This feature is new as part of Orchard 1.10

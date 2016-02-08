@@ -4,7 +4,7 @@ In chapter 3 we learned about *Snippet Elements*. They are elements dynamically 
 ### Parameterized Snippets
 As of Orchard 1.10, this feature was enhanced to provide *parameterizable snippets*. A parameterized snippet enables users to add snippet elements to the layout editor and *configure these snippets with custom settings*.
 
-To add settings to a snippet, all the theme developer needs to do is invoke an Html helper called `SnippetField`. This nifty helper serves two purposes:
+To add settings to a snippet, all a developer needs to do is invoke an `Html` helper called `SnippetField`. This nifty helper serves two purposes:
 
 1. To provide meta information to the element editor about the configurable field.
 2. To read the configured value for the field when the element is being rendered.
@@ -62,10 +62,32 @@ Let's see how this looks on the front end:
 
 ![](./figures/fig-82-jumbotron-front-end.png)
 
-### Creating Custom Editors
+### Custom Field Editors
+Besides the default set of snippet field editors, you can provide your own snippet field editor types. All you need to do is create a Razor view in the **Views/EditorTemplates** folder of your theme or module, and give it a name as follows: **Elements.Snippet.Field.[YourEditorTypeName].cshtml**. For example, if you wanted to provide an editor called *Multiline*, you would create a Razor file called **Elements.Snippet.Field.Multiline.cshtml**. Then, when rendering snippet fields, you would specify **Multiline** as the snippet field type, as is demonstrated in the following sample snippet:
 
+```C#
+@Html.SnippetField("Paragraph", "Multiline")
+```
+
+The following code listing shows an example implementation of the field editor snippet:
+
+```C#
+@model Orchard.Layouts.ViewModels.SnippetFieldViewModel
+@{
+    var field = Model;
+}
+<div class="form-group">
+    @Html.Label(field.Descriptor.Name, field.Descriptor.DisplayName.ToString())
+    @Html.TextArea(field.Descriptor.Name, field.Value, 10, 50, new { @class = "text large" })
+    @if (field.Descriptor.Description != null) {
+        @Html.Hint(field.Descriptor.Description)
+    }
+</div>
+```
+
+The only real requirement of a custom snippet field type Razor view is to render some input field that has the same name as the value provided by `SnippetFieldViewModel.Descriptor.Name`, which wires up the user's input with the backing store of the snippet field. 
 
 ### Summary
 In this chapter, we learned how snippets work and how we can parameterize them so that users can configure them from the layout editor. Snippets enable theme developers to create custom elements without having to write C# classes. All that's required is a Razor view and some markup.
 
-And that's actually it for part 2! In the first part we looked at the Layouts module from a user's perspective. In part two, we looked at the module from a theme developer's perspective. In the third and final part, we'll do a deep dive and check this module out from a module developer's perspective and learn about all the extensibility points that the Layouts module has to offer. Fasten your seatbelt!   
+In addition to being able to create snippets, we also learned how to provide our own snippet field type editors, simply by creating another Razor view that follows a particular naming convention.

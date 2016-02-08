@@ -54,7 +54,7 @@
     	* Responsive Layouts
 	* **Chapter 11 -  Snippets**
     	* Parameterized Snippets
-		* Creating Custom Editors [TODO]
+		* Creating Custom Editors
 * **Part 3**
     * **Chapter 13 -  Writing Custom Elements**
 	    * The Element Class

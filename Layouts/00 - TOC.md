@@ -3,6 +3,7 @@
 * **Introduction**
 * **Part 1**
 	* **Chapter 1 - Introduction to Layouts**
+		* Defining Layouts
 		* Orchard and Layouts
 		* When to use Orchard.Layouts
 		* Frequently Asked Questions

@@ -1,34 +1,39 @@
 ## Elements as Widgets
-So far we have seen how to work with elements by placing them on a design surface called the Layout Editor. But, as I eluded to before, elements can be used for more things than just being placed on a design surface. In this chapter, we'll see how we can use elements as widgets without the need to write any code.
+So far we have seen how to work with elements and the layout editor on content items that have the Layout Part. But elements can be used for more things than that. In this chapter, we'll see how we can use elements as widgets without writing any code.
 
 ### Why Elements as Widgets
-With the advent of the Layouts module, we now have the worlds of Widgets and the world of Elements, which are kind of like widgets, but not quite. Widgets are content items, while elements are something different.
+With the advent of the Orchard.Layouts module, we now have the worlds of Widgets and the world of Elements, which are kind of like widgets, but not quite. Widgets are content items, while elements are a different kind of entity.
 
-The long-term goal is to unify the world of Widgets and Elements. Widgets, as we know them today, are ultimately just content items tied to a layer and a zone and are a way to place them in particular zones. The widgets screen could be replaced with a design surface that represents the various zones available to the theme. The user could then drag & drop elements into each zone (bound to the selected layer). This would simplify working with "widgets" significantly. 
+The long-term goal is to unify the two worlds. Widgets, as we know them today, are ultimately just content items tied to a **layer** and a **zone**. Now, instead of adding widgets directly to layers and zones, we could conceive of a way where we add **elements** to layers and zones. This will have the advantage of not having to write elements and widgets, but just elements.
 
-Until we're there, there may be times that you need a custom widget that you also want to place on a layout design surface. Although you could write the widget code as well as the element code, it would involve a great deal of code duplication. Since it's currently not possible to add widgets to layouts, you would have to write a custom element with the same behavior as its widgets equivalent.
+Now, elements are not content items and do not support composition like content items do, so you may be wondering if we wouldn't lose something important: Widgets are content items, which means we can extend widgets with content parts. The answer is that we will lose nothing. On the contrary, there is a lot to gain in terms of ease of use and flexibility. Widgets as we know them would be replaced by content item types harvested as elements. These elements manage the creation and destruction of content items. And that is just one type of element. Many more elements are available, such as the Content Item element which enables the user to select existing content items. The Widgets UI would also be more intuitive to use.
 
-Fortunately there's no need for that, because the Layouts module enables you to use Elements as Widgets by using a content part called **ElementWrapperPart**.
+But anyway, we're not there yet. And there may be times that you need an element that you also want to be able to use as a widget, and the other way around.
+
+As of Orchard 1.10, there are two ways to handle this situation without having to write duplicate code:
+
+1. Write an element once and configure a new widget content type with the **Element Wrapper Part** to use the element.
+2. Write a content part once and configure a new widget content type.
+
+If you're using 1.9, then option 1 is the only option available, and is the topic of this chapter.
+
+> To use option 2, all you need to do is enable the **Widget Elements** feature.
 
 ### Element Wrapper Part
-The `ElementWrapperPart` is a content part that you can attach to any content type, and has a single part setting called **Element Type Name**, which takes the technical name of the element to display.
+The **Element Wrapper Part** is a content part that has a single setting called **Element Type Name**, which takes the technical name of the element to display.
 
-> The way the `ElementWrapperPart` works is that the `ElementWrapperPartDriver` instantiates the configured element type by name and takes care of invoking the editor and display methods of that element and simply returns the created shapes. When we look at the code in Part 3, we'll see how similar elements are to content parts, which made it easy to implement `ElementWrapperPart`. 
-
-With this part in place, we now can create *reusable building blocks in the form of elements* and use them as widgets whenever necessary. This approach is called the *Element First* approach.
+The way the Element Wrapper Part works is that it instantiates the configured element type by name and takes care of invoking the editor and display methods of that element and simply returns the created shapes. When we look at the code in Part 3, we'll see that elements are quite similar to the way content parts work.
 
 ### Elements First
-Whenever you're about to write a new widget, you should consider implementing it as an element. This provides a number of advantages:
+Whenever you're about to write a new widget, consider implementing it as an element. This provides a number of advantages:
 
 - You can place elements on the layout design surface.
 - You can render them inline using tokens (which we'll cover in the next chapter).
 - You can use elements as widgets without additional coding by using `ElementWrapperPart`, which means:
 - No code duplication.
 
-Having elements also means it's easy to place them into zones directly when the Widgets module gets revamped to taking advantage of the Layouts engine.
-
 ### Using Elements as Widgets
-Before we can use an element as a widget, we need to define a Widget content type that is configured to use that element. At the very minimum, your Widget content type should have the following settings and parts:
+Before you can use an element as a widget, you need to define a Widget content type that is configured to use that element. At the very minimum, your Widget content type should have the following settings and parts:
 
 - WidgetPart
 - CommonPart (automatically added for you when creating a content type from the back-end)
@@ -39,25 +44,27 @@ Before we can use an element as a widget, we need to define a Widget content typ
 - Listable -> unchecked (to prevent your widget content items from being listed on the Contents screen)
 - Creatable -> unchecked (to prevent your widget content items from being creatable via the New section and Contents screen. Widgets should always be created via the Widgets screen so that they get assigned a Zone and a Layer)
 
-The key content part is the `ElementWrapperPart`. Whatever element type name you specify here will be rendered by the widget. This works for any element type, including element blueprints.
-
-Let's give this a try by creating a *Contact Details* widget that wraps our *Contact Details* element created in the previous chapter.
+The key content part here of course is the **Element Wrapper Part**.
 
 #### Trying it out: Creating a Widget based on an Element
+So, let's see how it works.
+
+In this example, we'll see how the **Contact Details** element created in chapter 5 can be reused as a widget.
+
 ##### Step 1
-Go to Content Definition and click the **Create new type** button on the top-right side of the window, and enter the following values on the **New Content Type** screen:
+Go to **Content Definition** and click the **Create new type** button on the top-right side of the window, and enter the following values on the **New Content Type** screen:
 
 - Display Name -> *Contact Details*
 - Content Type Id -> *ContactDetails*
 
 And hit **Create**.
 
-![Figure 60 - Creating the Contact Details wiget - step 1.](http://i.imgur.com/UE1tMMW.png)
+![Figure 6.1 - Creating the Contact Details widget - step 1.](./figures/fig-6-1-creating-contact-details-widget-step1.png)
 
-*Figure 60 - Creating the Contact Details wiget - step 1.*
+*Figure 6.1 - Creating the Contact Details widget - step 1.*
 
 ##### Step 2
-On the **Add Parts To "Contact Details"** screen, check the following parts:
+On the **Add Parts To "Contact Details"** screen, include the following parts:
 
 - Element Wrapper
 - Identity
@@ -66,22 +73,22 @@ On the **Add Parts To "Contact Details"** screen, check the following parts:
 And hit **Save**.
 
 ##### Step 3
-On the **Edit Content Type - Contact Details** screen, perform the following operations:
+On the **Edit Content Type - Contact Details** screen, do the following:
 
 - Uncheck the following fields:
     - Creatable
     - Listable
-- Specify *Widget* as the Stereotype
-- Expand the *Element Wrapper* part settings and provide the following element type name: *ContactDetails* (see the previous chapter for details on creating this element).
+- Specify **Widget** as the Stereotype.
+- Expand the **Element Wrapper** part settings and provide the following *element type name*: **ContactDetails** (see the previous chapter for details on creating this element).
 
 And hit **Save** to save your changes.
 
-![Figure 61 - The Contact Details widget settings.](http://i.imgur.com/waENQ2A.png)
+![Figure 6.2 - The Contact Details widget settings.](./figures/fig-6-2-contact-details-widget-settings.png)
 
-*Figure 61 - The Contact Details widget settings.*
+*Figure 6.2 - The Contact Details widget settings.*
 
 ##### Step 4
-Now that we created a new widget type, we can create and add Contact Details widgets to any of our zones and layers.
+With that in place, we can add **Contact Detail** widgets to any zone and layer.
 
 - Go to Widgets and click the **Add** button on the **AsideSecond** zone.
 - On the **Choose A Widget** screen, select the **Contact Details** widget.
@@ -90,32 +97,27 @@ Now that we created a new widget type, we can create and add Contact Details wid
 And hit **Publish Now**.
 
 ##### Step 5
-Navigate to the front-end and, low and behold, there's our custom widget that is in fact powered by our *Contact Details* element.
+Navigate to the front-end and, low and behold, there's the **Contact Details widget** that is in fact powered by the **Contact Details element**.
 
-![Figure 62 - The Contact Details widget as it appears on the front-end in the AsideSecond zone.](http://i.imgur.com/zoF7jGb.png)
+![Figure 6.3 - The Contact Details widget as it appears on the front-end in the AsideSecond zone.](./figures/fig-6-3-contact-details-widget-frontend.png)
 
-*Figure 62 - The Contact Details widget as it appears on the front-end in the AsideSecond zone.* 
+*Figure 6.3 - The Contact Details widget as it appears on the front-end in the AsideSecond zone.* 
 
 ### Existing Widgets based on Elements
-Being able to use elements as widget is quite useful. For example, the Layouts module comes with a *Content Item* element as we've seen in chapter 3: Meet the Elements. Orchard doesn't come with a content picker widget, but with the `ElementWrapperPart` it's very simple to create one.
+Being able to use elements as widget can be quite useful. For example, the Layouts module comes with a **Content Item** element as we've seen in chapter 3. Although Orchard doesn't come with a content picker widget, it's very simple to create one with the **Element Wrapper Part**.
 
-In fact, the Layouts module does exactly that for us! When Layouts is enabled, it creates the following additional widgets based on elements:
+In fact, when the Layouts feature is enabled, the following additional widget types based on elements are added to the system:
 
 - Text Widget
 - Media Widget
 - Content Widget
 
-In all fairness, the Text Widget, as is the case with the Text element, isn't all that useful, so we'll skip that one.
+In all fairness, the Text Widget (as is the case with the Text element), isn't all that useful. We already have the Html Widget.
 The Media Widget lets the user select one or more Media Items to be displayed.
 The Content Widget lets the user select one or more Content Items to be displayed.
 
-This enables scenarios where you want to display a certain piece of content multiple times on various locations on your website, without the need to duplicate that content, which of course greatly improves the site's maintenance.
-Granted, you could achieve this by simply placing an Html Widget somewhere and associate it with the Default layer of course, but as soon as you want to display the same content twice in two different zones, you'll need to duplicate that content.
-
 ### Summary ###
-Elements are versatile and can be used in many different ways other than being part of a canvas. In this chapter, we learned about the `ElementWrapperPart` and how to use it to turn elements into widgets.
-
-In the next chapter, we'll learn about yet another way to display elements using the *Element token*. 
+Elements can be used in many different ways other than being added to a canvas. In this chapter, we learned about the **Element Wrapper Part** and how to use it to turn elements into widgets. 
  
 
      

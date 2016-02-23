@@ -87,15 +87,15 @@ with the release of 1.9, a fourth option appeared. And a much better one too. I 
 
 With **Orchard.Layouts**, creating a two-column layout could not be simpler. Simply add a **Grid** element with a single **Row** and two **Column** elements to the **Canvas**, add any number of content elements, and we're done. No need for HTML editing, no additional zones, no widgets and layers, and no additional content types. The next figure gives you an idea of how the layout editor looks like.
 
-![Figure 6 - Say hello to the new kid on the block - the LayoutPart and its layout editor](./figures/fig-1-6-layout-editor.png)
-*Figure 6 - Say hello to the new kid on the block - the LayoutPart and its layout editor*
+![Figure 1.6 - Say hello to the new kid on the block - the LayoutPart and its layout editor](./figures/fig-1-6-layout-editor.png)
+*Figure 1.6 - Say hello to the new kid on the block - the LayoutPart and its layout editor*
 
 As you can see, the layout editor consists of a design surface and a toolbox. 
 
 The layout editor makes creating content layouts a breeze, even complex ones.
 
-![](./figures/fig-7-layout-editor-layout-c.png)
-*Figure 7 - Complex layouts made simple*
+![](./figures/fig-1-7-layout-editor-layout-c.png)
+*Figure 1.7 - Complex layouts made simple*
 
 To sum it up, this is why we need **Orchard.Layouts**:
 
@@ -146,9 +146,9 @@ Grid layouts have a fixed maximum number of columns per row, and each cell in a 
 
 Figure 8 shows an example of a 12-column grid onto which visual elements could be laid out.
 
-![Figure 8 - A 12 column grid](./figures/fig-8-sample-grid.png)
+![Figure 1.8 - A 12 column grid](./figures/fig-1-8-sample-grid.png)
 
-*Figure 8 - A 12 column grid*
+*Figure 1.8 - A 12 column grid*
 
 As you can see, the total span size of cells in each row always adds up to the maximum number of columns.
 
@@ -157,9 +157,9 @@ Grids are great for designing layouts. The layout-editor enables users to create
 #### Responsive Layouts ####
 One big advantage of working with CSS grid frameworks for the web is that these frameworks help with implementing *responsive layouts*. A responsive layout is one that adapts itself automatically based on the view-port's width of the browser. As the view-port width decreases in size, the cells in a grid decrease in size as well up to a specified minimum, after which the cell will break onto the next line. The next figure shows an example of a layout on a desktop device as well as on a mobile device, and how the various columns collapse underneath one another.
 
-![](http://i.imgur.com/zyQRuFQ.png)
+![Figure 1.9 - A responsive grid works well on various widths](./figures/fig-1-9-responsive-grid.png)
 
-*Figure 9 - A responsive grid works well on various widths*
+*Figure 1.9 - A responsive grid works well on various widths*
 
 ### Summary ###
 In this chapter, we introduced the new Layouts module, what it is for and why we need it.   

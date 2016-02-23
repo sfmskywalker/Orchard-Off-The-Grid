@@ -1,40 +1,15 @@
 ## First Look
 In this chapter, we'll take a tour through the Layouts module and see how it works from a user's perspective.
-We will assume you have a clean Orchard 1.9.1 or later installation running.
 
 ### The Layouts Feature
-When you setup a new Orchard 1.9.1 or later installation, the Layouts feature will be enabled by default.
+When you setup a new Orchard 1.9 or later installation with the **Default** recipe, the Layouts feature will be enabled by default.
+One noticeable difference between 1.9 and previous versions is that the **Page** content type will have the **LayoutPart** attached, instead of the **BodyPart**.
 
-![](http://i.imgur.com/HnyIuz5.png) 
+### Layout Part
+The Layout Part provides an editor that enables the user to drag and drop **elements** onto a canvas. These elements then get rendered on the front-end when the content item is being displayed.
 
-*Figure 10 - The new Layouts feature is enabled by default on new Orchard installations*
-
-Out of the box, the `Page` content type will have the `LayoutPart` attached by default instead of the `BodyPart`, as you can see in figure 11.
-
-![](http://i.imgur.com/cxzFyWY.png)
-*Figure 11 - The Page content type has a LayoutPart instead of a BodyPart*
-
-### Layout Part ###
-The `LayoutPart` is a key component that enables the user to create layouts of elements on a page. When attached to a content type, it provides a nifty layout editor that consists of a *design surface* onto which one can drag & drop elements from a *toolbox*.
-
-So whenever you need a content type that needs a body of text, you should consider using the `LayoutPart` instead of the `BodyPart`, as this gives you greater flexibility over the layout of the content.
-
-### Elements ###
-Elements are a new concept in Orchard. They are the entities that we can drag & drop onto the design surface or even render inline in a piece of HTML code using the `Element.Display` token, and basically represent visual entities for users to work with. They are the fundamental building blocks to the way the Layouts module works.
-
-Elements are powerful building blocks that are visual, contain data and provide behavior.
-In fact, Elements are so fundamental to the Layouts module that the module might as well have been named `Orchard.Elements`. If you've ever worked with a game level editor, Orchard elements are to the design surface as sprites are to a game level.
-
-Elements have the following characteristics:
-
-* They have a technical name as well as a display name.
-* They have a category.
-* They can have data.
-* They can have behavior.
-* They can contain other elements.
-* They can render their edit screen.
-* They can render themselves on the design surface.
-* They can render themselves on the front end.
+### Elements
+Elements are a new concept in Orchard. They are things that contain data, provide behavior and provide their own rendering. Elements can even contain other elements, allowing for nesting. This, in fact, is how layouts are achieved, as we'll see shortly. 
 
 Out of the box, there are seven categories of elements:
 
@@ -48,40 +23,31 @@ Out of the box, there are seven categories of elements:
 
 It's all lovely stuff, and we'll get to know all of the available elements in the next chapter.
 
-### Layout Editor ###
-The Layout Editor is another key component of the Layouts module, as it enables users to visually compose collections of elements onto a design surface, ultimately making up the layout of a piece of content.
+### Layout Editor
+The Layout Editor, which is what powers the Layout Part, enables users to visually compose collections of elements onto a design surface, ultimately making up the layout of a piece of content.
 
 Let's see how this looks like when editing the default Orchard homepage (figure 12):
 
-![Figure 12 - The layout editor](http://i.imgur.com/I5yhOXl.png)
+![Figure 2.1 - The layout editor](./figures/fig-2-1-layoutpart-editor.png)
 
-*Figure 12 - The layout editor*
+*Figure 2.1 - The layout editor*
 
-As you can see, the entire `BodyPart` and its default `TinyMce` editor have been replaced with the *Layout Editor*. 
+The editor consists of two main sections: the *canvas* and the *toolbox*.
+The canvas is the area onto which you place elements that are made available via the toolbox.
 
-The editor consists of two main parts: the *design surface* and the *toolbox*.
-The design surface is the area onto which you place *elements*.
+> The canvas itself is an element of type Canvas, and is the root of the tree of elements.
 
-> Elements are a new type of entity in Orchard, and represent atomic objects that can be placed onto a canvas. Whenever you want to be able to place something onto a canvas,you need an element for it.
+The toolbox is a repository of all available elements in the system, grouped per category. Elements are bound to Orchard features, which means that other modules can provide additional element types.
 
-The toolbox is a repository of all available elements in the system, grouped per category. Elements are bound to Orchard features, which means that other modules can provide more element types. To make those elements available, all you need to do is enable those module's features. One such example is the `Projection Element` feature provided by the `Orchard.Layouts` module. We will go over each element that ships with orchard later in this chapter.
+The user places elements from the toolbox onto the surface by using drag & drop. If the selected element has an editor associated with it, a dialog window presenting the element's properties will appear immediately when it's dropped onto the canvas.
 
-The way the editor works is that the user will place elements from the toolbox onto the surface by using drag & drop. If the selected element has an editor associated with it, a dialog window will appear immediately when it's dropped onto the surface. Figure 14 and 15 show the `Html` element being dragged & dropped onto the canvas as an example.
-
-![](http://i.imgur.com/6SQVEbd.png)
-*Figure 14 - Dragging the Html element onto the canvas*
-
-![](http://i.imgur.com/BefBmXe.png)
-*Figure 15 - When dropping the Html element onto the canvas, a dialog window appears enabling the Html properties to be edited*
-
-Regardless of the changes you make to the design surface, only when you actually save the content item will they persist. The way this works is that as soon as the `Save` or `Publish Now` button is clicked, the layout editor serializes the root `Canvas` element and its children into a JSON string which is set to the value of a hidden input field, which gets submitted as part of the form post.
-
-So even deleted elements will not be really gone until you save the content item.
+![](./figures/fig-2-3-drag-html-element.png)
+*Figure 2.3 - The Layout editor uses drag & drop to add elements to the design surface*
 
 #### Element Editor Controls ####
-All elements on a canvas are selectable. Depending on the element being selected, the user can perform certain operations on that element. These operations are represented as little icons as part of a mini toolbar that becomes visible when an element is selected. Common operations are *Edit*, *Edit Properties*, *Delete*, *Move up* and *Move down*. Each element provides its own toolbar. Elements such as `Row` and `Column` for example provide additional operations such as *Distribute columns evenly* and *Split column*.
+Depending on the element being selected, the user can perform certain operations. These operations are represented as little icons as part of a mini toolbar that becomes visible when an element is selected. Common operations are *Edit*, *Edit Properties*, *Delete*, *Move up* and *Move down*. More specific operations are *Distribute columns evenly* and *Split column*, which apply to **Row** and **Column**, respectively.
 
-![](http://i.imgur.com/ZICdJ2D.png) 
+![](./figures/fig-2-4-html-element-toolbar.png)
 
 *Figure 16 - The Html element toolbar*
 
@@ -164,16 +130,18 @@ The following table lists all operations available to various elements:
   </tbody>
 </table> 
 
-*Table 1 - A list of the various toolbar icons available to varous types of elements*
+*Table 2.1 - A list of the various toolbar icons*
 
-#### Keyboard Support ####
-In addition to the keyboard shortcuts listed above per element action from the toolbar, there is also keyboard support for doing things like copy, cut, paste, and navigating around the hierarchy of elements on the design surface.
+#### Keyboard Support
+In addition to the keyboard shortcuts listed above, there is also keyboard support for doing things like **copy**, **cut**, **paste**, and **navigating** around the hierarchy of elements on the canvas.
 
-The layout editor provides a link to a small popup window listing all of the available keyboard shortcuts (figure 17), which I'll repeat here for your convenience.
+The layout editor provides a link to a small pop-up window listing all of the available keyboard shortcuts.
 
-![Figure 17 - Dialog window listing all of the available keyboard shortcuts](http://i.imgur.com/UsLshtd.png)
+![Figure 2.5 - Dialog window listing all of the available keyboard shortcuts](./figures/fig-2-5-layout-editor-keyboard-shortcuts.png)
 
-*Figure 17 - Dialog window listing all of the available keyboard shortcuts*
+*Figure 2.5 - Dialog window listing all of the available keyboard shortcuts*
+
+The following table lists the complete set of keyboard shortcuts.
 
 <table>
   <thead>
@@ -292,45 +260,44 @@ The layout editor provides a link to a small popup window listing all of the ava
   </tbody>
 </table>
 
-#### Drag & Drop ####
-As mentioned already, the layout editor supports drag & drop operations.
-The user can drag and drop any element from the toolbox onto the design surface.
+*Table 2.2 - The complete set of keyboard shortcuts available*
 
-Once an element sits within a container element such as `Canvas` or `Column`, the user can change position within that container using drag & drop operations as well.
+#### Moving Elements Within its Container
+Once an element is placed on the canvas, its position can be changed within its container using drag & drop.
 
-> At the time of this writing, it is not possible to move an element to another container using drag & drop Instead, use the Cut/Paste keyboard shortcuts (`Ctrl+X` and `Ctrl+V`) to cut and paste an element elsewhere.
+#### Moving Elements Across Containers
+At the time of this writing, it is not possible to move an element to another container using drag & drop. Instead, use the Cut/Paste keyboard shortcuts (**Ctrl+X** and **Ctrl+V**) to cut and paste an element from its current container to another one.
 
-Columns can be resized by dragging their left and right edges. When you resize a column, its adjacent column will be resized as well. If you want to resize a column and introduce an offset ("detaching" the column from its neighbor), press the `Alt` key while dragging the edges.
+#### Re-sizing Columns
+**Column** elements can be re-sized by dragging their left and right edges. When you re-size a column, its adjacent column will be re-sized as well. If you want to re-size a column and introduce an offset ("detaching" the column from its neighbor), press the **Alt** key while dragging the edges.
 
-> [Daniel Stolt](https://github.com/DanielStolt), the contributor who wrote the layout editor, is working on an exciting new open source project called [Ayos](https://github.com/IDeliverable/ayos "Ayos"). In a nutshell, Ayos is a standalone layout editor and will be more powerful, rich and flexible than the layout editor that currently ships with Orchard at the time of this writing.
+### Front-end ###
+Enabling the user to create and manage layouts from the back-end is only half of the story. The second half is getting that layout out on the screen on the front-end.
 
-### Layout Frontend ###
-Enabling the user to create and manage layouts from the back-end is only half of the story of course. The second half is getting that layout out on the screen on the front-end.
+Figure 2.6 demonstrates what the layout will look like on the front end.
 
-Figure 18 demonstrates what the layout will look like on the front end.
+![Figure 2.6 - The front-end view of the Layout Part](./images/fig-2-6-layoutpart-frontend.png)
 
-![Figure 18 - The front-end view of the Layout Part](http://i.imgur.com/Vz1lSHK.png)
+*Figure 2.6 - The result of the layout as constructed on the default Orchard homepage*
 
-*Figure 18 - The result of the layout as constructed on the default Orchard homepage*
+The red bordered box is the section as rendered by the **LayoutPart**.
 
-The red bordered box is the section as rendered by the `LayoutPart`.
-As you can see, the three columns of the second row are neatly rendered as expected: each column appears horizontally adjacent.
+> In previous Orchard versions, the three columns shown in figure 2.6 were originally implemented as 3 Html widgets that were placed in the **TripelFirst**, **TripelSecond** and **TripelThird** zones. In case you're wondering if I made a typo, rest assured; The naming of these zones are based on the name of a strong Belgium beer, and is an internal joke. Since these widgets were specific to the homepage, they have been replaced by simply adding a row and three columns to the content's layout.
 
-We will dig into this much deeper when we look at how elements and the rendering engine works in detail later in this book, but for now I wanted to show you how the rendered markup looks like. Let's have a look at figure 19:
+We will get into this much deeper when we look at how elements and the rendering engine works in detail later in this book, but for now I wanted to show you how the rendered markup looks like. Let's have a look at figure 19:
 
-![Figure 19 - A closer look at the rendered output of the Layouts Part](http://i.imgur.com/uuBU5uw.png)
+![Figure 2.7 - A closer look at the rendered output of the LayoutPart](./figures/fig-2-7-layoutpart-frontend-analyzed.png)
 
-*Figure 19 - A closer look at the rendered output of the Layouts Part*
+*Figure 2.7 - A closer look at the rendered output of the **LayoutPart***
 
-What we see here is a portion of the rendered HTML output of the `LayoutsPart`. The way it works is that each element is responsible for its own rendering. Container elements render their HTML and then iterate over each child element and tell them to render itself. This rendering system leverages Orchard's *shapes* mechanism.
+What we see here is a portion of the rendered HTML output of the Layout Part. The way it works is that each element is responsible for its own rendering. Container elements render their HTML and then iterate over each child element and tell them to render itself. This rendering system leverages Orchard's *shapes* mechanism.
 
-Notice that the Column elements have a `class` attribute with value `span-4 cell`. If you;re familiar with Bootstrap 2, you'll probably recognize this. However, the Layouts module does not use Bootstrap's grid system on the front-end. Instead, it uses a home-grown CSS file called `default-grid.css` which is based on [Sebastien Ros'](https://github.com/sebastienros "Sebastien Ros") [custom grid CSS](https://github.com/sebastienros/custom-grid "Custom Grid"), a lightweight CSS grid framework.
+Notice that the **Column** elements have a **class** attribute with value **span-4 cell**. If you're familiar with Bootstrap 2, you'll probably recognize this. However, the Layouts module does not use Bootstrap's grid system on the front-end. Instead, it uses a CSS file called **default-grid.css** which is based on [Sebastien Ros'](https://github.com/sebastienros "Sebastien Ros") [custom grid CSS](https://github.com/sebastienros/custom-grid "Custom Grid"), a lightweight CSS grid framework.
 
-Later on we'll see how we can replace this markup with Bootstrap-specific markup instead and learn how to completely take over control of rendering any elements from our themes.  
+We'll see how to replace this markup with Bootstrap-specific markup instead and learn how to completely take over control of rendering any elements from our themes in chapter 10.
 
 ### Summary ###
-In this chapter, we were given a high level overview of what the Layouts module is all about. In essence, it's about being able to easily create layouts of contents.
-We were introduced to the `Layouts` feature, the `LayoutPart`, its editor and how that appears on the front end with the default *ThemeMachine*.
+In this chapter, we learned at a high level overview of what the Layouts module is all about. In essence, it's about being able to easily create layouts of contents.
+We were introduced to the **Orchard.Layouts** module, the **LayoutPart**, its editor and how that appears on the front-end by default.
 
-However, there is much more to Layouts than we have seen so far, as we'll find out.
 In the next chapter, we'll have a look at all of the elements that come with the box.

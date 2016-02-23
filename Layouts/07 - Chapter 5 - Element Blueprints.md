@@ -1,11 +1,11 @@
 ## Element Blueprints
-In this chapter we'll take a look at *Element Blueprints*, which is a feature that enables the user to create pre-configured elements. These elements can then be used by the layout editor for example.
+In this chapter we'll take a look at **Element Blueprints**, which is a feature that enables the user to create pre-configured elements that become available from the toolbox.
 
 ### When to use Element Blueprints
-Whenever you find that you are duplicating elements in various layouts, those elements are a candidate to be turned into an element blueprint. Examples are company logos, contact information and slogans that appear in multiple places on the site.
+Whenever you find that you are duplicating elements in various layouts, those elements are a candidate to be turned into an element blueprint. For example, if you find yourself duplicating elements all over the place without changing its contents, those elements could be turned into a blueprint.
 
 ### Creating Element Blueprints
-Creating element blueprints is easy. To create one, you click on the *Elements* admin menu item underneath the *Layouts* admin menu item. This will take you to the index screen of all of your element blueprints, which is empty by default. On this screen, click the *Create* button to the top right of the window. The screen that appears next presents you with all of the available elements to use for your pre-configured element. Once you picked one, the next screen will ask for the following information:
+Creating element blueprints is easy. To create one, go to the **Elements** admin menu item right under the **Layouts** admin menu item. This will take you to the index screen of all of your element blueprints, which is empty by default. On this screen, click the **Create** button to the top right of the window. The screen that appears next presents you with all of the available elements to use for your pre-configured element. When one is selected, the next screen will prompt the user for the following information:
 
 - Element Display Name
 - Element Type Name
@@ -14,64 +14,67 @@ Creating element blueprints is easy. To create one, you click on the *Elements* 
 
 The **Element Display Name** is the *user friendly name* used when displaying the element in the toolbox and on the layout design surface.
 
-The **Element Type Name** is the *technical name* of the element, and is used to when serializing and de-serializing the element. It's basically its unique identifier. No two elements must have the same name.
+The **Element Type Name** is the *technical name* of the element, and is used when serializing and de-serializing the element. No two elements must have the same name.
 
-The **Element Description** is an optional field that gives you the opportunity to describe what the element represents, providing users a better understanding of what this element represents.
+The **Element Description** is an optional field that gives you the opportunity to describe what the element represents. The description helps users get a better understanding of what this element represents.
 
-The **Element Category** also is an optional field, and lets you control in what category of the toolbox this element appears. If no category is specified, *Blueprints* is assumed as its category.
+The **Element Category** is an optional field that lets you control in what category of the toolbox this element appears. If no category is specified, *Blueprints* is used as the category.
 
 #### Trying it out: Creating an Element Blueprint
-In this little walkthrough, I will show you step-by-step how to create a sample blueprint element called **Contact Details**. The purpose of this element is for the user to be able to manage their contact details from a single place, while being able to place this element on various pages. Whenever the user changes their contact details, the changes are reflected everywhere.
+In the example that follows, I will show you step-by-step how to create a sample blueprint element called **Contact Details**. The purpose of this element is for the user to be able to manage their contact details from a single place, while being able to place this element on various pages. Whenever the user changes their contact details, the changes are reflected everywhere.
 
 ##### Step 1
 Click on the *Elements* admin menu item.
 
-![](http://i.imgur.com/kyrW6F0.png)
+![Figure 5.1 - Elements admin menu](./figures/fig-5-1-adminmenu-elements.png)
+
+*Figure 5.1 - Elements admin menu*
 
 ##### Step 2
-Click on the *Create* button on the top right side of the window and select the *Html* element as the base element for our element blueprint.
+Click the **Create** button on the top right side of the window and select the **Html** element as the base element for our element blueprint.
 
-![](http://i.imgur.com/sJyyTxM.png)
+![Figure 5.2 - Selecting a base element](./figures/fig-5-2-html-base-element.png)
+
+*Figure 5.2 - Selecting a base element*
 
 ##### Step 3
-Provide the following values for the following fields:
+On the screen that appears next, provide the following values:
 
 - Element Display Name -> *Contact Details*
 - Element Type Name -> *ContactDetails*
 - Element Description -> *My contact details*
 - Element Category: *Demo*
 
-And press *Create* to continue to the next screen, where the Html element editor will appear.
+Hit **Create** to continue to the next screen, where the **Html** element editor will appear.
 
 ##### Step 4
-Provide any content you like for this step. I entered the following HTML code:
+Enter the following HTML code into the Html editor (using the HTML view of TinyMCE):
 
     <p>John van Dyke</p>
     <p>Cell: +18723456</p>
     <p>Email: <a href="mailto:j.vandyke@acme.com">j.vandyke@acme.com</a></p>
     <p>Skype: johnvandyke</p>
 
-And hit *Save*
-Our demo blueprint element has now been created. The next step is to use this element on one of our pages.
+And hit **Save**.
 
-![Figure 57 - Our demo blueprint element.](http://i.imgur.com/kaVUn66.png)
+![Figure 5.3 - A new blueprint element has been created](./figures/fig-5-3-demo-blueprint-element.png)
 
-*Figure 57 - Our demo blueprint element.*
+*Figure 5.3 - A new blueprint element has been created*
 
 ##### Step 5
-Go to the Content screen and edit an existing page or create a new one. Once the editor is loaded, you'll see that there's a new category called *Demo* available with our newly created *Contact Details* element.
+Now that the blueprint has been created, we can start using it. Go to the **Content** screen and add or edit a Page content item. Notice the new category called *Demo* and the new **Contact Details** element.
 
-![Figure 58 - Our demo blueprint element available from the toolbox.](http://i.imgur.com/TdpVI34.png)
+![Figure 5.4 - The blueprint element is available from the toolbox](./figures/fig-5-4-demo-blueprint-element-toolbox-item.png)
 
-*Figure 58 - Our demo blueprint element available from the toolbox.*
+*Figure 5.4 - The blueprint element is available from the toolbox*
 
-Simply drag & drop the *Contact Details* element to the design surface, and behold, there's our pre-configured element.
+Add the *Contact Details* element to the canvas.
 
-![Figure 59 - Our demo blueprint element as it appears on the design surface.](http://i.imgur.com/iPnxkWj.png)
+![Figure 5.5 - The demo blueprint element as it appears on the canvas.](./figures/fig-5-5-demo-blueprint-element-design.png)
 
-*Figure 59 - Our demo blueprint element as it appears on the design surface.*
+*Figure 5.5 - The demo blueprint element as it appears on the canvas*
+
+We can add this element to as many pages as we like. When the time comes that your contact details change, all you have to do is update the blueprint element once, and the changes get reflected everywhere.
 
 ### Summary ###
-In conclusion, blueprint elements enable you to create pre-configured elements and use them as regular elements. Blueprint elements are useful when you find that you use the same elements with the same configuration on multiple layouts. And whenever you change the blueprint element itself, the changes are reflected wherever the element appears.
-
-In the next chapter, we'll look at another content part that is provided by the Layouts module: the *ElementWrapperPart*. which enables us to use elements as widgets, including blueprint elements.
+Blueprint elements enable you to create pre-configured elements and use them as normal elements. Blueprint elements are useful when you find that you use the same elements with the same configuration in multiple places. Whenever you change the blueprint element itself, the changes are reflected everywhere the element appears.

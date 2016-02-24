@@ -43,7 +43,7 @@
 		* Applying Element Rules
 * **Part 2**
 	* **Chapter 9 - Theming**
-    	* A Shapes Primer
+    	* A Primer on Shapes
     	* Anatomy of a Shape
        	* Shape Templates
     	* Elements and Shapes

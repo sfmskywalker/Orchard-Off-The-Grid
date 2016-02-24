@@ -1,7 +1,7 @@
 ## Part 3 - Extensibility ##
 So far we have seen how to use the Layouts module from a user's and theme developer's perspective. The functionality available out of the box is pretty impressive as it is, but the module wouldn't be an Orchard module if it weren't also extremely extensible.
 
-There will come a point in your career as an Orchard developer where you want to write custom elements. Business-domain specific elements, or general-pupose, reusable elements that you want to resell. Whatever the case may be, if you are looking to write custom elements and element providers, then this part is for you.
+There will come a point in your career as an Orchard developer where you want to write custom elements and generally need a deeper understanding of the Layouts module and the services it provides. Whatever the case may be, if you are looking to write custom elements and element providers or reuse some of the functionality provided by **Orchard.Layouts**, then this part is for you.
 
 Part 3 is divided into the following 6 chapters:
 

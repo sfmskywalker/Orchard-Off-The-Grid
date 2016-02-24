@@ -1,6 +1,6 @@
 ## Introduction to Layouts
-The release of Orchard 1.9 introduced 
-In this chapter, we'll see what **Orchard.Layouts** module brings to the table and why (and when) we should use it.
+The release of Orchard 1.9 introduced a new module called **Orchard.Layouts**. 
+In this chapter, I will introduce you to what this module is and why it was created.
 
 ### Defining Layouts
 Layouts are everywhere. You find them in newspapers and magazines, in the office and your living room. Cities, planets and the universe all have a layout. Elements, objects and shapes that are placed in a particular position relative to each other, are said to be part of a layout.

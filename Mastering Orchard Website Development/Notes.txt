@@ -1,0 +1,12 @@
+- Building a sample website
+- Including website specific mofule and theme
+-	Custom forms, Dynamic Forms API, Workflows sending emails
+- Structuring the solution
+- Using Lists to organize content type collections (examples: Timeline & Milestones, News & News Articles, Testimonials)
+- Programmable Pages using Elements.
+- Custom Menu Item Types.
+- Custom 404
+- Related Content using Projections, Taxonomies and Tokens
+- Best practices:
+	- Zero errors in logs.
+	

@@ -1,7 +1,0 @@
-p. 113 - The reference to the blog article looks like it should better fit in the footer note than in line with the explanation.
-p. 114 - There's a typo in the Tyle Driver responsibilities. The second one should start with "Handling" as well.
-p. 118 - "This a convenient" should be "this convenient". Also, this differs from the implementation of Image element, at least in Orchard 1.9.3.  There, the deserialization of image media ID is unconditional, so it happens no matter if the model update is successful or not.
-p. 120 - Typo: "Orchard.MediaLibray". Also, having the content items list mentioned here is confusing and sends off a couple of pages back, where this was described sufficiently enough to not to revisit it here I think.
-p. 121 - Typo in the code snippet: `// ImportContentSesison store.` should be `Session`
-p. 132 - It is not made clear enough that this template is what is going to be used by the editor, not the other tile layout template. I found it confusing when working around this. It's mentioned on p 137, but can cause some confusion if trying it all out before reading up to that point
-p. 138 - `if only if` should probably just be `only if`
